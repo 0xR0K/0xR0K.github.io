@@ -1,6 +1,14 @@
 ---
-title: "LifeOnline * 0xR0K"
+title:  LifeOnline 
 layout: default
 ---
-# Bienvenido a mi blog personal.
-Este es mi sitio personal donde podras encontrar contenido creado por mi sobre mis andanzas y aventuras.
+
+# Bienvenido a mi blog personal
+Este es mi sitio personal con artículos técnicos.
+
+## Últimos artículos
+{% for articulo in site.articulos %}
+- [{{ articulo.title }}]({{ articulo.url }})
+{% endfor %}
+
+
