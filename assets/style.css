@@ -85,3 +85,47 @@ main {
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
+
+blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  background-color: #1e1e2f; /* Fondo por defecto */
+  border-left: 5px solid #7fdbff; /* Color por defecto */
+  font-style: normal; /* Quitamos itálica para que se lea mejor */
+  color: #e0e0e0;
+}
+
+/* 1. Alerta / Warning (Rojo) */
+blockquote.callout-warning {
+  border-left-color: #ff5555;
+  background-color: #2c1a1a;
+}
+blockquote.callout-warning strong {
+  color: #ff5555;
+}
+
+/* 2. Éxito / Success (Verde) */
+blockquote.callout-success {
+  border-left-color: #50fa7b;
+  background-color: #1a2c20;
+}
+blockquote.callout-success strong {
+  color: #50fa7b;
+}
+
+/* 3. Nota / Info (Azul) */
+blockquote.callout-info {
+  border-left-color: #8be9fd;
+  background-color: #1a2630;
+}
+blockquote.callout-info strong {
+  color: #8be9fd;
+}
+
+/* 4. Cita normal (Gris) */
+blockquote.callout-quote {
+  border-left-color: #6272a4;
+  font-style: italic;
+  opacity: 0.9;
+}

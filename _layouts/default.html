@@ -2,25 +2,61 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>{{ site.title }}</title>
-  <link rel="stylesheet" href="/assets/style.css">
+  <title>{{ page.title }} | {{ site.title }}</title>
+  <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
 </head>
 <body>
   <header>
-    <h1><a href="/">{{ site.title }}</a></h1>
+    <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
     <nav>
-      <a href="/">Inicio</a>
-      <a href="/articulos/">Artículos</a>
+      <a href="{{ '/' | relative_url }}">Inicio</a>
+      <a href="{{ '/articulos/' | relative_url }}">Artículos</a>
       <a href="https://www.instagram.com/0xr0k/">Insta</a>
     </nav>
   </header>
 
   <main>
+    {% if page.title %}
+      <h1>{{ page.title }}</h1>
+    {% endif %}
+
     {{ content }}
   </main>
 
   <footer>
     <p>&copy; 2025 0xR0K</p>
   </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Busca todos los blockquotes (citas)
+      const quotes = document.querySelectorAll("blockquote");
+      
+      quotes.forEach(quote => {
+        const p = quote.querySelector("p");
+        if (!p) return;
+
+        const text = p.innerHTML;
+        
+        // Detectar tipos de Callouts
+        if (text.includes("[!WARNING]") || text.includes("[!ALERT]")) {
+          quote.classList.add("callout", "callout-warning");
+          p.innerHTML = text.replace("[!WARNING]", "<strong>⚠️ ALERTA:</strong>").replace("[!ALERT]", "<strong>⚠️ ALERTA:</strong>");
+        } 
+        else if (text.includes("[!SUCCESS]")) {
+          quote.classList.add("callout", "callout-success");
+          p.innerHTML = text.replace("[!SUCCESS]", "<strong>✅ ÉXITO:</strong>");
+        }
+        else if (text.includes("[!NOTE]") || text.includes("[!INFO]")) {
+          quote.classList.add("callout", "callout-info");
+          p.innerHTML = text.replace("[!NOTE]", "<strong>ℹ️ NOTA:</strong>").replace("[!INFO]", "<strong>ℹ️ INFO:</strong>");
+        }
+        else {
+          // Si es una cita normal, le ponemos clase normal
+          quote.classList.add("callout-quote");
+        }
+      });
+    });
+  </script>
 </body>
 </html>
