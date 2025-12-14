@@ -1,7 +1,6 @@
 
 --- 
 title: Como hacer un Backup de tus archivos. Cifrar, comprimir, Sincronizar y mas cosas.
-date: 2025-12-10 11:31:00 +0100
 layout: default
 categories: []
 ---
