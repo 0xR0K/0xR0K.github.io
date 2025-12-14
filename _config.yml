@@ -1,0 +1,8 @@
+title: LifeOnline
+description: Artículos técnicos y notas
+theme: jekyll-theme-hacker
+
+collections:
+  articulos:
+    output: true
+    permalink: /articulos/:name/
