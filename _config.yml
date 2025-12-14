@@ -5,4 +5,4 @@ theme: jekyll-theme-hacker
 collections:
   articulos:
     output: true
-    permalink: /Articulos/:name/
+    permalink: /articulos/:name/
