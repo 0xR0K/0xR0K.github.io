@@ -1,6 +1,6 @@
-title: LifeOnline
+title: LifeOnline | 0xR0K
 description: Artículos técnicos y notas
-theme: jekyll-theme-hacker
+markdown: kramdown
 
 collections:
   articulos:
