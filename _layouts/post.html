@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} | LifeOnline</title>
+  <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+  </head>
+<body class="post-layout">
+
+  <header>
+    <div class="branding-container">
+      <a href="{{ '/' | relative_url }}" class="site-logo">
+        <img src="{{ '/assets/images/Logo.png' | relative_url }}" alt="0xR0K Logo">
+      </a>
+      <div class="site-identity">
+        <h1><a href="{{ '/' | relative_url }}">LIFEONLINE</a></h1>
+        <p>Toda una vida Conectado</p>
+      </div>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="{{ '/articulos/' | relative_url }}">Artículos</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="article-container">
+    
+    <header class="article-header">
+      <h1 class="article-title">{{ page.title }}</h1>
+      <div class="title-separator"></div>
+    </header>
+
+    <div class="article-content">
+      {{ content }}
+    </div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2025 LifeOnline | 0xR0K</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const blockquotes = document.querySelectorAll("blockquote");
+      
+      blockquotes.forEach(quote => {
+        const p = quote.querySelector("p");
+        if (!p) return;
+        
+        const content = p.innerHTML;
+        // Regex para detectar > [!TIPO] Titulo
+        const match = content.match(/^\[!(.*?)\]/);
+        
+        if (match) {
+          const type = match[1].toLowerCase();
+          quote.classList.add("callout");
+          quote.classList.add(`callout-${type}`);
+          
+          const cleanText = content.replace(match[0], "").trim();
+          
+          let icon = "📝"; // Default
+          let title = type.toUpperCase();
+
+          if (type === 'warning' || type === 'alert') { icon = "⚠️"; title = "ALERTA"; }
+          if (type === 'danger' || type === 'error') { icon = "🔥"; title = "PELIGRO"; }
+          if (type === 'success' || type === 'check') { icon = "✅"; title = "ÉXITO"; }
+          if (type === 'info' || type === 'note') { icon = "ℹ️"; title = "NOTA"; }
+          if (type === 'tip') { icon = "💡"; title = "CONSEJO"; }
+
+          const headerDiv = document.createElement("div");
+          headerDiv.className = "callout-header";
+          headerDiv.innerHTML = `<span class="callout-icon">${icon}</span> <strong class="callout-title-text">${title}</strong>`;
+          
+          const contentDiv = document.createElement("div");
+          contentDiv.className = "callout-content";
+          contentDiv.innerHTML = cleanText;
+
+          quote.innerHTML = ""; 
+          quote.appendChild(headerDiv);
+          quote.appendChild(contentDiv);
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
