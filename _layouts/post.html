@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -27,7 +26,6 @@
   </header>
 
   <main class="article-container">
-    
     <header class="article-header">
       <h1 class="article-title">{{ page.title }}</h1>
       <div class="title-separator"></div>
@@ -36,7 +34,6 @@
     <div class="article-content" id="markdown-content">
       {{ content }}
     </div>
-
   </main>
 
   <footer>
@@ -50,53 +47,105 @@
       const postSlug = "{{ page.slug }}"; 
       const baseUrl = "{{ site.baseurl }}";
 
-      const obsidianImageRegex = /!\[\[(.*?)\]\]/g;
-
-      contentDiv.innerHTML = contentDiv.innerHTML.replace(obsidianImageRegex, function(match, fileName) {
+      function createImgTag(fileName, className) {
         const cleanFileName = encodeURIComponent(fileName.trim());
         const finalPath = `${baseUrl}/assets/images/${postSlug}/${cleanFileName}`;
-        return `<img src="${finalPath}" alt="${fileName}" class="obsidian-img-auto">`;
+        return `<img src="${finalPath}" alt="${fileName}" class="${className}">`;
+      }
+
+      const codeBlocks = contentDiv.querySelectorAll("pre code");
+      codeBlocks.forEach(block => {
+        const text = block.textContent.trim();
+        const match = text.match(/^!\[\[(.*?)\]\]$/);
+
+        if (match) {
+          const fileName = match[1];
+          const imgHTML = createImgTag(fileName, "obsidian-img-auto");
+          const preTag = block.parentElement;
+          const imgContainer = document.createElement("div");
+          imgContainer.className = "rescued-image-container";
+          imgContainer.style.textAlign = "center";
+          imgContainer.innerHTML = imgHTML;
+          preTag.replaceWith(imgContainer);
+        }
       });
 
+      const walker = document.createTreeWalker(contentDiv, NodeFilter.SHOW_TEXT, null, false);
+      let node;
+      const nodesToReplace = [];
+
+      while(node = walker.nextNode()) {
+        if (node.nodeValue.includes("![[")) {
+          nodesToReplace.push(node);
+        }
+      }
+
+      nodesToReplace.forEach(textNode => {
+        const parent = textNode.parentNode;
+        if (parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return;
+
+        const fragment = document.createDocumentFragment();
+        const parts = textNode.nodeValue.split(/(!\[\[.*?\]\])/g);
+
+        parts.forEach(part => {
+          const match = part.match(/!\[\[(.*?)\]\]/);
+          if (match) {
+            const span = document.createElement("span");
+            span.innerHTML = createImgTag(match[1], "obsidian-img-auto");
+            fragment.appendChild(span);
+          } else {
+            fragment.appendChild(document.createTextNode(part));
+          }
+        });
+        parent.replaceChild(fragment, textNode);
+      });
 
       const blockquotes = document.querySelectorAll("blockquote");
       
       blockquotes.forEach(quote => {
-        const firstP = quote.querySelector("p");
-        if (!firstP) return;
-        
-        const text = firstP.textContent;
-        const match = text.match(/^\[!(.*?)\]/);
+        const rawText = quote.innerText.trim();
+        const match = rawText.match(/^\[!(.*?)\]/);
         
         if (match) {
-          const type = match[1].toLowerCase();
+          const typeRaw = match[1];
+          const type = typeRaw.split("]")[0].toLowerCase();
+          const firstP = quote.querySelector("p");
           
-          let customTitle = text.replace(match[0], "").trim();
-          
-          firstP.innerHTML = firstP.innerHTML.replace(match[0], "").trim();
+          let titleText = type.toUpperCase();
+          let icon = "📝";
 
-          if(firstP.innerText.trim() === "") {
-             firstP.style.display = "none";
+          if (type.includes('warn') || type.includes('alert')) { icon = "⚠️"; titleText = "ALERTA"; }
+          else if (type.includes('danger') || type.includes('error')) { icon = "🔥"; titleText = "PELIGRO"; }
+          else if (type.includes('success') || type.includes('check')) { icon = "✅"; titleText = "ÉXITO"; }
+          else if (type.includes('info') || type.includes('note')) { icon = "ℹ️"; titleText = "NOTA"; }
+          else if (type.includes('tip')) { icon = "💡"; titleText = "CONSEJO"; }
+
+          if (firstP) {
+            let firstPHtml = firstP.innerHTML;
+            const tagRegex = new RegExp(`\\[!${typeRaw}\\]`, "i");
+            
+            if (firstP.textContent.replace(tagRegex, "").trim().length > 0) {
+                let tempTitle = firstPHtml.replace(tagRegex, "").trim();
+                titleText = tempTitle;
+            }
+            
+            firstP.innerHTML = firstP.innerHTML.replace(tagRegex, "");
+            
+            if (firstP.textContent.trim() === "") {
+                firstP.style.display = "none";
+            }
           }
 
           quote.classList.add("callout");
           quote.classList.add(`callout-${type}`);
-          
-          let icon = "📝"; 
-          let defaultTitle = type.toUpperCase();
-
-          if (type.includes('warn') || type.includes('alert')) { icon = "⚠️"; defaultTitle = "ALERTA"; }
-          if (type.includes('danger') || type.includes('error')) { icon = "🔥"; defaultTitle = "PELIGRO"; }
-          if (type.includes('success') || type.includes('check')) { icon = "✅"; defaultTitle = "ÉXITO"; }
-          if (type.includes('info') || type.includes('note')) { icon = "ℹ️"; defaultTitle = "NOTA"; }
-          if (type.includes('tip')) { icon = "💡"; defaultTitle = "CONSEJO"; }
-          if (!customTitle) customTitle = defaultTitle;
 
           const headerDiv = document.createElement("div");
           headerDiv.className = "callout-header";
-          headerDiv.innerHTML = `<span class="callout-icon">${icon}</span> <strong class="callout-title-text">${customTitle}</strong>`;
+          headerDiv.innerHTML = `<span class="callout-icon">${icon}</span> <strong class="callout-title-text">${titleText}</strong>`;
+          
           const contentWrapper = document.createElement("div");
           contentWrapper.className = "callout-content";
+
           while (quote.firstChild) {
             contentWrapper.appendChild(quote.firstChild);
           }
@@ -107,6 +156,5 @@
       });
     });
   </script>
-
 </body>
 </html>
