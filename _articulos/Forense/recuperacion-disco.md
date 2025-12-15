@@ -1,7 +1,7 @@
 --- 
-title: Forense - Como recupere un disco duro que formate mal.
-date: 2025-11-10 11:36 
-layout: post 
+title: Forense - Como recupere un disco duro.
+date: 2025-11-15 11:33 
+layout: post
 categories: [Forense] 
 ---
 
@@ -13,10 +13,7 @@ Unos segundos después, me di cuenta del error y un sudor frio recorrio mi frent
 
 Por suerte, lo hice de una forma "incorrecta" (un formateo rápido de sistema de archivos en lugar de un borrado seguro). Así que, paradójicamente, mi error fue mi salvación. He aquí mi pequeño granito de arena para ayudarte si te encuentras en esta situacion.
 
----
-tags: #linux, #recuperación, #sistema, #archlinux, #ext4, #testdisk, #forense 
 
----
 > [!WARNING] CUIDADO! - Arquitectura de Almacenamiento (HDD vs SSD)
 > La viabilidad de este procedimiento depende críticamente del medio de almacenamiento subyacente.
 >
@@ -36,7 +33,6 @@ tags: #linux, #recuperación, #sistema, #archlinux, #ext4, #testdisk, #forense
 > Para mitigar la degradación de rendimiento, los sistemas operativos modernos envían el comando **TRIM** (ATA) o **UNMAP** (SCSI) al detectar un borrado de archivos.
 > * **El proceso:** El SO informa al controlador del SSD qué páginas lógicas ya no son válidas.
 > * **La consecuencia:** El controlador del SSD, a través de su proceso de *Garbage Collection*, purga esos bloques físicamente. Esto resulta en que los datos son reemplazados por ceros a nivel físico, haciendo inútil cualquier intento de recuperación por software.
-
 
 Por cosas como estas sigo manteniendo discos duros mecanicos en mi sistema...
 Hoy en dia todos optan por el rendimiento, por los SDD o los M2. y no los culpo es una buena solucion si lo que quieres es un sistema rapido. Pero si quieres guardar cosas en tu ordenador y las consideras importantes, utiliza un disco duro mecanico.
@@ -76,9 +72,8 @@ Para ello, utilizamos **TestDisk**, el estándar *de facto* para la recuperació
 
 > [!INFO] Herramientas utilizadas:
 >   testdisk
- ```bash
+> ```bash
 > sudo pacman -S testdisk
-```
 
 ```bash
 sudo testdisk /dev/sdb
@@ -160,6 +155,7 @@ Superblock backups stored on blocks:
 ### 2.3. La Reparación Forzada (`fsck`)
 
 Con el mapa en la mano, intenté reparar el sistema usando el primer respaldo (`32768`). Falló. Probablemente el daño del formateo llego hasta ahí.
+
 
 ![[Recuperando 0.png]]
 

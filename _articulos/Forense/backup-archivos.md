@@ -1,8 +1,8 @@
----
+--- 
 title: Como hacer un Backup de tus archivos. Cifrar, comprimir, Sincronizar y mas cosas.
-date: 2025-11-11 11:29
+date: 2025-11-09 11:29 
 layout: post
-categories: [Forense]
+categories: [Forense] 
 ---
 
 ¿Recuerdas esa escena de _Mr. Robot_ donde Elliot guarda datos en CDs, los etiqueta como álbumes de música y los esconde en un estuche? Más allá de la paranoia de la serie, hay una lección importante ahí: **la privacidad y la persistencia de los datos.**
