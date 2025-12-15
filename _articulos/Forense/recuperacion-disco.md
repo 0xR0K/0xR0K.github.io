@@ -1,5 +1,5 @@
 --- 
-title: Como recupere un disco duro.
+title: Como recupere un disco que formatee por error.
 date: 2025-11-15 11:33 
 layout: post
 categories: [Forense] 
