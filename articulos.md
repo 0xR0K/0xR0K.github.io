@@ -1,11 +1,5 @@
 ---
-title: Artículos
-layout: default
+layout: archive
+title: Archivos
 permalink: /articulos/
 ---
-
-# Artículos
-
-{% for articulo in site.articulos %}
-- [{{ articulo.title }}]({{ articulo.url | relative_url }})
-{% endfor %}
