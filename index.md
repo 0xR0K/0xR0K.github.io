@@ -1,14 +1,27 @@
 ---
-title:  0x 
-layout: default
+layout: home
+title: LifeOnline
 ---
 
-# Bienvenido a mi blog personal
-Este es mi sitio personal con artículos técnicos.
+<div class="posts-grid">
+  {% for articulo in site.articulos %}
+    <article class="post-card">
+      <a href="{{ articulo.url | relative_url }}">
+        
+        <div class="post-image">
+          {% if articulo.image %}
+            <img src="{{ articulo.image | relative_url }}" alt="{{ articulo.title }}">
+          {% else %}
+            <img src="https://via.placeholder.com/800x450/111111/333333?text=LifeOnline" alt="No Image">
+          {% endif %}
+        </div>
 
-## Últimos artículos
-{% for articulo in site.articulos %}
-- [{{ articulo.title }}]({{ articulo.url }})
-{% endfor %}
+        <div class="post-content">
+          <span class="post-date">{{ articulo.date | date: "%b %d, %Y" }}</span>
+          <h2 class="post-title">{{ articulo.title }}</h2>
+        </div>
 
-
+      </a>
+    </article>
+  {% endfor %}
+</div>

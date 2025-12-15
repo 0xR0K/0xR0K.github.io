@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeOnline | 0xR0K</title>
+  <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="layout-home">
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="site-branding">
+        <h1 class="site-title"><a href="{{ '/' | relative_url }}">LIFEONLINE | 0xR0K</a></h1>
+        <p class="site-subtitle">Toda una vida Conectado</p>
+      </div>
+      
+      <nav class="site-nav">
+        <a href="https://github.com/0xr0k" target="_blank">GITHUB</a>
+        <a href="https://instagram.com/0xr0k" target="_blank">INSTAGRAM</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="posts-grid">
+      {% for articulo in site.articulos %}
+        <article class="post-card">
+          <a href="{{ articulo.url | relative_url }}" class="post-link">
+            
+            <div class="post-image">
+              {% if articulo.image %}
+                <img src="{{ articulo.image | relative_url }}" alt="{{ articulo.title }}">
+              {% else %}
+                <div class="no-image-placeholder"></div>
+              {% endif %}
+            </div>
+
+            <div class="post-content">
+              <span class="post-date">{{ articulo.date | date: "%d %b %Y" }}</span>
+              <h2 class="post-title">{{ articulo.title }}</h2>
+            </div>
+          </a>
+        </article>
+      {% endfor %}
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2025 0xR0K - SYSTEM READY</p>
+  </footer>
+
+</body>
+</html>
