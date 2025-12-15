@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page.title }} | LifeOnline</title>
   <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
-  </head>
+</head>
 <body class="post-layout">
 
   <header>
@@ -32,7 +33,7 @@
       <div class="title-separator"></div>
     </header>
 
-    <div class="article-content">
+    <div class="article-content" id="markdown-content">
       {{ content }}
     </div>
 
@@ -44,6 +45,19 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
+  
+      const contentDiv = document.getElementById("markdown-content");
+      const postSlug = "{{ page.slug }}"; 
+      const baseUrl = "{{ site.baseurl }}";
+      const obsidianImageRegex = /!\[\[(.*?)\]\]/g;
+      contentDiv.innerHTML = contentDiv.innerHTML.replace(obsidianImageRegex, function(match, fileName) {
+        const cleanFileName = encodeURIComponent(fileName.trim());      
+        const finalPath = `${baseUrl}/assets/images/${postSlug}/${cleanFileName}`;
+        
+        return `<img src="${finalPath}" alt="${fileName}" class="obsidian-img-auto">`;
+      });
+
+
       const blockquotes = document.querySelectorAll("blockquote");
       
       blockquotes.forEach(quote => {
@@ -51,7 +65,6 @@
         if (!p) return;
         
         const content = p.innerHTML;
-        // Regex para detectar > [!TIPO] Titulo
         const match = content.match(/^\[!(.*?)\]/);
         
         if (match) {
@@ -61,7 +74,7 @@
           
           const cleanText = content.replace(match[0], "").trim();
           
-          let icon = "📝"; // Default
+          let icon = "📝"; 
           let title = type.toUpperCase();
 
           if (type === 'warning' || type === 'alert') { icon = "⚠️"; title = "ALERTA"; }

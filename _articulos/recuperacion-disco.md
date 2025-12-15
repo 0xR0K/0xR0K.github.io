@@ -161,7 +161,7 @@ Superblock backups stored on blocks:
 
 Con el mapa en la mano, intenté reparar el sistema usando el primer respaldo (`32768`). Falló. Probablemente el daño del formateo llego hasta ahí.
 
-![[/assets/images/Recuperando 0.png]]
+![[Recuperando 0.png]]
 
 Pasé al siguiente: **Bloque 98304**.
 ```bash
