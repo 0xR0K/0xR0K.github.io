@@ -53,7 +53,7 @@
         return `<img src="${finalPath}" alt="${fileName}" class="${className}">`;
       }
 
-      const codeBlocks = contentDiv.querySelectorAll("pre code");
+        const codeBlocks = contentDiv.querySelectorAll("pre code");
       codeBlocks.forEach(block => {
         const text = block.textContent.trim();
         const match = text.match(/^!\[\[(.*?)\]\]$/);
@@ -70,6 +70,7 @@
         }
       });
 
+      // Caso B: Imágenes en texto plano
       const walker = document.createTreeWalker(contentDiv, NodeFilter.SHOW_TEXT, null, false);
       let node;
       const nodesToReplace = [];
@@ -100,40 +101,47 @@
         parent.replaceChild(fragment, textNode);
       });
 
-      const blockquotes = document.querySelectorAll("blockquote");
+        const blockquotes = document.querySelectorAll("blockquote");
       
       blockquotes.forEach(quote => {
-        const firstP = quote.querySelector("p");
-        if (!firstP) return;
-
-        const rawText = firstP.textContent.trim();
+        const rawText = quote.innerText.trim(); 
         const match = rawText.match(/^\[!(\w+)\]/);
         
         if (match) {
           const typeRaw = match[1];
           const type = typeRaw.toLowerCase();
           
-          let titleText = rawText.replace(match[0], "").trim();
-          
-          const tagRegex = new RegExp(`\\[!${typeRaw}\\]`, "i");
-          firstP.innerHTML = firstP.innerHTML.replace(tagRegex, "");
-          
-          if (titleText.length > 0) {
-            firstP.innerHTML = firstP.innerHTML.replace(titleText, "");
-          } else {
-            titleText = type.toUpperCase();
-          }
-
-          if (firstP.textContent.trim() === "") {
-            firstP.style.display = "none";
-          }
+          const firstP = quote.querySelector("p");
+          let titleText = type.toUpperCase();
 
           let icon = "📝";
-          if (type.includes('warn') || type.includes('alert')) { icon = "⚠️"; if(titleText === type.toUpperCase()) titleText = "ALERTA"; }
-          else if (type.includes('danger') || type.includes('error')) { icon = "🔥"; if(titleText === type.toUpperCase()) titleText = "PELIGRO"; }
-          else if (type.includes('success') || type.includes('check')) { icon = "✅"; if(titleText === type.toUpperCase()) titleText = "ÉXITO"; }
-          else if (type.includes('info') || type.includes('note')) { icon = "ℹ️"; if(titleText === type.toUpperCase()) titleText = "NOTA"; }
-          else if (type.includes('tip')) { icon = "💡"; if(titleText === type.toUpperCase()) titleText = "CONSEJO"; }
+          if (type.includes('warn') || type.includes('alert')) { icon = "⚠️"; titleText = "ALERTA"; }
+          else if (type.includes('danger') || type.includes('error')) { icon = "🔥"; titleText = "PELIGRO"; }
+          else if (type.includes('success') || type.includes('check')) { icon = "✅"; titleText = "ÉXITO"; }
+          else if (type.includes('info') || type.includes('note')) { icon = "ℹ️"; titleText = "NOTA"; }
+          else if (type.includes('tip')) { icon = "💡"; titleText = "CONSEJO"; }
+
+            if (firstP) {
+             let fullText = firstP.innerHTML;
+             
+             const headerRegex = new RegExp(`\\[!${typeRaw}\\]\\s*(.*?)(?=<br>|$|^\s*$)`, "i");
+             const headerMatch = fullText.match(headerRegex);
+
+             if (headerMatch && headerMatch[1].trim().length > 0) {
+                 // Si encontramos texto después del [!TYPE], ese es tu título personalizado
+                 titleText = headerMatch[1].trim();
+             }
+
+             // 3. LIMPIEZA: Reemplazamos EXACTAMENTE lo que encontramos por vacío en el HTML
+             // Esto elimina el [!TYPE] y el Título del cuerpo del mensaje para que no se dupliquen
+             firstP.innerHTML = fullText.replace(headerRegex, "");
+
+             // 4. Si el párrafo quedó vacío (o solo con espacios), lo ocultamos
+             // Esto evita que quede un hueco en blanco al principio de la caja
+             if (firstP.innerText.trim().length === 0) {
+                 firstP.style.display = "none";
+             }
+          }
 
           quote.classList.add("callout");
           quote.classList.add(`callout-${type}`);
@@ -145,6 +153,7 @@
           const contentWrapper = document.createElement("div");
           contentWrapper.className = "callout-content";
 
+          // Movemos el contenido restante (ya limpio) dentro del wrapper
           while (quote.firstChild) {
             contentWrapper.appendChild(quote.firstChild);
           }
