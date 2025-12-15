@@ -5,50 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LifeOnline | 0xR0K</title>
   <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
-<body class="layout-home">
+<body>
 
-  <header class="site-header">
-    <div class="header-inner">
-      <div class="site-branding">
-        <h1 class="site-title"><a href="{{ '/' | relative_url }}">LIFEONLINE | 0xR0K</a></h1>
-        <p class="site-subtitle">Toda una vida Conectado</p>
-      </div>
+  <header>
+    <div class="branding-container">
+      <div class="site-icon">🔌</div> 
       
-      <nav class="site-nav">
-        <a href="https://github.com/0xr0k" target="_blank">GITHUB</a>
-        <a href="https://instagram.com/0xr0k" target="_blank">INSTAGRAM</a>
-      </nav>
+      <div class="site-identity">
+        <h1><a href="{{ '/' | relative_url }}">LIFEONLINE</a></h1>
+        <p>Toda una vida Conectado</p>
+      </div>
     </div>
+
+    <nav>
+      <ul>
+        <li><a href="{{ '/articulos/' | relative_url }}">Artículos</a></li>
+      </ul>
+    </nav>
   </header>
 
   <main class="container">
     <div class="posts-grid">
+      
       {% for articulo in site.articulos %}
         <article class="post-card">
-          <a href="{{ articulo.url | relative_url }}" class="post-link">
+          <a href="{{ articulo.url | relative_url }}">
             
-            <div class="post-image">
+            <div class="post-image-container">
               {% if articulo.image %}
                 <img src="{{ articulo.image | relative_url }}" alt="{{ articulo.title }}">
               {% else %}
-                <div class="no-image-placeholder"></div>
+                <img src="https://via.placeholder.com/800x450/111111/FFFFFF?text=LifeOnline" alt="Cover">
               {% endif %}
             </div>
 
-            <div class="post-content">
-              <span class="post-date">{{ articulo.date | date: "%d %b %Y" }}</span>
-              <h2 class="post-title">{{ articulo.title }}</h2>
+            <div class="post-date">
+              {{ articulo.date | date: "%b %d" }}
             </div>
+
+            <h2 class="post-title">{{ articulo.title }}</h2>
+
           </a>
         </article>
       {% endfor %}
+
     </div>
   </main>
 
-  <footer class="site-footer">
-    <p>&copy; 2025 0xR0K - SYSTEM READY</p>
+  <footer>
+    <p>&copy; 2025 LifeOnline | 0xR0K</p>
   </footer>
 
 </body>
