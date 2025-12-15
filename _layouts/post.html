@@ -45,15 +45,16 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-  
+      
       const contentDiv = document.getElementById("markdown-content");
       const postSlug = "{{ page.slug }}"; 
       const baseUrl = "{{ site.baseurl }}";
+
       const obsidianImageRegex = /!\[\[(.*?)\]\]/g;
+
       contentDiv.innerHTML = contentDiv.innerHTML.replace(obsidianImageRegex, function(match, fileName) {
-        const cleanFileName = encodeURIComponent(fileName.trim());      
+        const cleanFileName = encodeURIComponent(fileName.trim());
         const finalPath = `${baseUrl}/assets/images/${postSlug}/${cleanFileName}`;
-        
         return `<img src="${finalPath}" alt="${fileName}" class="obsidian-img-auto">`;
       });
 
@@ -61,39 +62,47 @@
       const blockquotes = document.querySelectorAll("blockquote");
       
       blockquotes.forEach(quote => {
-        const p = quote.querySelector("p");
-        if (!p) return;
+        const firstP = quote.querySelector("p");
+        if (!firstP) return;
         
-        const content = p.innerHTML;
-        const match = content.match(/^\[!(.*?)\]/);
+        const text = firstP.textContent;
+        const match = text.match(/^\[!(.*?)\]/);
         
         if (match) {
           const type = match[1].toLowerCase();
+          
+          let customTitle = text.replace(match[0], "").trim();
+          
+          firstP.innerHTML = firstP.innerHTML.replace(match[0], "").trim();
+
+          if(firstP.innerText.trim() === "") {
+             firstP.style.display = "none";
+          }
+
           quote.classList.add("callout");
           quote.classList.add(`callout-${type}`);
           
-          const cleanText = content.replace(match[0], "").trim();
-          
           let icon = "📝"; 
-          let title = type.toUpperCase();
+          let defaultTitle = type.toUpperCase();
 
-          if (type === 'warning' || type === 'alert') { icon = "⚠️"; title = "ALERTA"; }
-          if (type === 'danger' || type === 'error') { icon = "🔥"; title = "PELIGRO"; }
-          if (type === 'success' || type === 'check') { icon = "✅"; title = "ÉXITO"; }
-          if (type === 'info' || type === 'note') { icon = "ℹ️"; title = "NOTA"; }
-          if (type === 'tip') { icon = "💡"; title = "CONSEJO"; }
+          if (type.includes('warn') || type.includes('alert')) { icon = "⚠️"; defaultTitle = "ALERTA"; }
+          if (type.includes('danger') || type.includes('error')) { icon = "🔥"; defaultTitle = "PELIGRO"; }
+          if (type.includes('success') || type.includes('check')) { icon = "✅"; defaultTitle = "ÉXITO"; }
+          if (type.includes('info') || type.includes('note')) { icon = "ℹ️"; defaultTitle = "NOTA"; }
+          if (type.includes('tip')) { icon = "💡"; defaultTitle = "CONSEJO"; }
+          if (!customTitle) customTitle = defaultTitle;
 
           const headerDiv = document.createElement("div");
           headerDiv.className = "callout-header";
-          headerDiv.innerHTML = `<span class="callout-icon">${icon}</span> <strong class="callout-title-text">${title}</strong>`;
-          
-          const contentDiv = document.createElement("div");
-          contentDiv.className = "callout-content";
-          contentDiv.innerHTML = cleanText;
+          headerDiv.innerHTML = `<span class="callout-icon">${icon}</span> <strong class="callout-title-text">${customTitle}</strong>`;
+          const contentWrapper = document.createElement("div");
+          contentWrapper.className = "callout-content";
+          while (quote.firstChild) {
+            contentWrapper.appendChild(quote.firstChild);
+          }
 
-          quote.innerHTML = ""; 
           quote.appendChild(headerDiv);
-          quote.appendChild(contentDiv);
+          quote.appendChild(contentWrapper);
         }
       });
     });
