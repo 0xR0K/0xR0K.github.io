@@ -10,7 +10,9 @@
 
   <header>
     <div class="branding-container">
-      <div class="site-icon">🔌</div> 
+      <a href="{{ '/' | relative_url }}" class="site-logo">
+        <img src="{{ '/assets/images/Logo.png' | relative_url }}" alt="0xR0K Logo">
+      </a>
       
       <div class="site-identity">
         <h1><a href="{{ '/' | relative_url }}">LIFEONLINE</a></h1>
@@ -33,15 +35,12 @@
           <a href="{{ articulo.url | relative_url }}">
             
             <div class="post-image-container">
-              {% if articulo.image %}
-                <img src="{{ articulo.image | relative_url }}" alt="{{ articulo.title }}">
-              {% else %}
-                <img src="https://via.placeholder.com/800x450/111111/FFFFFF?text=LifeOnline" alt="Cover">
-              {% endif %}
-            </div>
+              <img src="{{ '/assets/images/' | append: articulo.slug | append: '/portada.png' | relative_url }}" 
+                   alt="{{ articulo.title }}"
+                   onerror="this.style.display='none';"> </div>
 
             <div class="post-date">
-              {{ articulo.date | date: "%b %d" }}
+              {{ articulo.date | date: "%d %b %Y" }}
             </div>
 
             <h2 class="post-title">{{ articulo.title }}</h2>
