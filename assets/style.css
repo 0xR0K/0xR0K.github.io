@@ -3,17 +3,15 @@
    (Full Suite: Home + Post + Archive)
    ========================================= */
 
-/* --- 1. RESET & BASICS --- */
+/* --- 1. Articulos y retoques --- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
   --bg-color: #000000;
   --text-main: #e0e0e0; 
   --text-bright: #ffffff;
-  --accent: #00f3ff;    /* CIAN */
+  --accent: #00f3ff;
   --accent-dim: rgba(0, 243, 255, 0.1);
-  
-  /* Colores de Callouts */
   --color-red: #ff5555;
   --color-orange: #ffb86c;
   --color-yellow: #f1fa8c;
@@ -33,7 +31,6 @@ body {
 a { text-decoration: none; color: inherit; transition: 0.2s; }
 a:hover { opacity: 0.8; }
 
-/* --- 2. HEADER (Global) --- */
 header {
   padding: 30px 5%;
   display: flex;
@@ -65,7 +62,6 @@ nav a {
 }
 nav a:hover { color: var(--accent); }
 
-/* --- 3. LAYOUT DE HOME (GRID) --- */
 .container { max-width: 1400px; margin: 0 auto; padding: 40px 5%; }
 
 .posts-grid {
@@ -93,7 +89,6 @@ nav a:hover { color: var(--accent); }
   header { flex-direction: column; gap: 15px; align-items: flex-start; }
 }
 
-/* --- 4. LAYOUT DE ARTÍCULO --- */
 .article-container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
 .article-header { text-align: center; margin-bottom: 50px; }
 .article-title {
@@ -105,7 +100,6 @@ nav a:hover { color: var(--accent); }
   margin: 20px auto 0; border-radius: 2px; box-shadow: 0 0 10px var(--accent);
 }
 
-/* Estilos de Markdown */
 .article-content h1, .article-content h2, .article-content h3 {
   color: var(--text-bright); margin-top: 2.5em; margin-bottom: 0.8em; font-weight: 700;
 }
@@ -117,7 +111,6 @@ nav a:hover { color: var(--accent); }
 .article-content a:hover { border-bottom-color: var(--accent); }
 .article-content img { max-width: 100%; height: auto; border-radius: 5px; display: block; margin: 30px auto; border: 1px solid #333; }
 
-/* Código */
 pre {
   background-color: #0a0a0a; border: 1px solid #333; border-radius: 6px;
   padding: 15px; margin: 2em 0; overflow-x: auto; position: relative;
@@ -126,7 +119,6 @@ pre::before { content: "● ● ●"; display: block; font-size: 10px; color: #4
 code { font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.9em; color: #f8f8f2; }
 p code, li code { background-color: #1a1a1a; padding: 2px 6px; border-radius: 4px; color: var(--accent); border: 1px solid #333; }
 
-/* Callouts */
 blockquote.callout {
   margin: 2em 0; padding: 0; border-left: 4px solid #555;
   background-color: rgba(255, 255, 255, 0.03); border-radius: 6px;
@@ -234,7 +226,6 @@ blockquote.callout-tip .callout-header { color: var(--accent); }
   }
 }
 
-/* FOOTER */
 footer {
   margin-top: 100px; padding: 40px 0; text-align: center;
   border-top: 1px solid #111; font-size: 12px; color: #444;
