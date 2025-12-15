@@ -1,5 +1,5 @@
 --- 
-title: Forense - Como recupere un disco duro.
+title: Como recupere un disco duro.
 date: 2025-11-15 11:33 
 layout: post
 categories: [Forense] 
@@ -148,9 +148,8 @@ sudo mke2fs -n /dev/sdb1
 - **El resultado:** El comando escupió la geometría calculada y, lo más importante, la lista de numeros magicos. Los respaldos:
 ```shell
 mke2fs 1.47.3 (8-Jul-2025)
-
 Superblock backups stored on blocks:
-    32768, 98304, 163840, 229376, 294912, 819200...
+32768, 98304, 163840, 229376, 294912, 819200...
 ```
 ### 2.3. La Reparación Forzada (`fsck`)
 
