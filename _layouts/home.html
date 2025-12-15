@@ -37,10 +37,7 @@
             <div class="post-image-container">
               <img src="{{ '/assets/images/' | append: articulo.slug | append: '/portada.png' | relative_url }}" 
                    alt="{{ articulo.title }}"
-                   onerror="this.style.display='none';"> </div>
-
-            <div class="post-date">
-              {{ articulo.date | date: "%d %b %Y" }}
+                   onerror="this.style.display='none';">
             </div>
 
             <h2 class="post-title">{{ articulo.title }}</h2>
