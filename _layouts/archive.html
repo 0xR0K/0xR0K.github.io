@@ -8,6 +8,7 @@
 </head>
 <body class="archive-layout">
 
+  <!-- CABECERA -->
   <header>
     <div class="branding-container">
       <a href="{{ '/' | relative_url }}" class="site-logo">
@@ -25,6 +26,7 @@
     </nav>
   </header>
 
+  <!-- CONTENIDO: ÍNDICE POR CATEGORÍAS -->
   <main class="container">
     
     <header class="page-header">
@@ -34,15 +36,45 @@
     </header>
 
     <div class="archive-content">
+      {% assign categories_list = "" | split: "" %}
       
-      {% for category in site.categories %}
+      {% for art in site.articulos %}
+        {% if art.categories %}
+          {% for cat in art.categories %}
+            {% assign categories_list = categories_list | push: cat %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+      
+      {% assign categories_list = categories_list | uniq | sort %}
+
+      {% for category in categories_list %}
+        
         <section class="category-section">
           <h2 class="category-title">
-            <span class="hash">#</span> {{ category[0] }}
+            <span class="hash">#</span> {{ category }}
           </h2>
           
           <ul class="article-list">
-            {% for post in category[1] %}
+            {% for post in site.articulos %}
+              {% if post.categories contains category %}
+                <li class="article-list-item">
+                  <a href="{{ post.url | relative_url }}" class="article-link">
+                    <span class="article-list-title">{{ post.title }}</span>
+                    <span class="article-list-date">{{ post.date | date: "%d/%m/%Y" }}</span>
+                  </a>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </section>
+
+      {% endfor %}
+      {% if categories_list.size == 0 %}
+        <section class="category-section">
+          <h2 class="category-title"><span class="hash">#</span> TODOS LOS ARTÍCULOS</h2>
+          <ul class="article-list">
+            {% for post in site.articulos %}
               <li class="article-list-item">
                 <a href="{{ post.url | relative_url }}" class="article-link">
                   <span class="article-list-title">{{ post.title }}</span>
@@ -52,11 +84,6 @@
             {% endfor %}
           </ul>
         </section>
-
-      {% endfor %}
-
-      {% if site.categories.size == 0 %}
-        <p style="text-align: center; color: #666;">No hay categorías definidas en los artículos.</p>
       {% endif %}
 
     </div>
