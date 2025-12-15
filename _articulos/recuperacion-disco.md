@@ -1,9 +1,8 @@
 --- 
-
 title: Forense - Como recupere un disco duro.
-date: 2025-12-14 21:36 
-layout: post categories: [Forense] 
-
+date: 2025-11-10 11:36 
+layout: post 
+categories: [Forense] 
 ---
 
 Estos días tuve un problema. Un problema que, tarde o temprano, nos acaba pasando a todos los que vivimos en la terminal. **Formateé la unidad incorrecta.**
