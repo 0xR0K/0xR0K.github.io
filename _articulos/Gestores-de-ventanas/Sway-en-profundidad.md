@@ -1,5 +1,5 @@
 --- 
-title: Mi aventura en Sway + un poco de historia sobre wayland
+title: Mi aventura en Sway + un poco de historia
 date: 2025-11-16 11:11 
 layout: post
 categories: [gestores-de-ventanas] 
