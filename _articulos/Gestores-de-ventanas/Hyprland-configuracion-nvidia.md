@@ -1,6 +1,6 @@
 --- 
 title: Configuracion para un Nvidia user
-date: 2025-12-26 15:45 
+date: 2025-12-26 15:25 
 layout: post
 categories: [gestores-de-ventanas, Hyprland] 
 ---
