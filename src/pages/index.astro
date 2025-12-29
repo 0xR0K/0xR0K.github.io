@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<Layout title="Inicio" description="Toda una vida conectado - Bitácora de un administrador.">
+	<section class="posts-grid">
+		{
+			posts.map((post) => (
+				<PostCard
+					title={post.data.title}
+					date={post.data.date}
+					url={`/articulos/${post.slug}/`}
+					slug={post.slug}
+				/>
+			))
+		}
+	</section>
+</Layout>
+
+<style>
+	.posts-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+		gap: 30px;
+	}
+</style>

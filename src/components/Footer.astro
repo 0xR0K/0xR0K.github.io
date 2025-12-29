@@ -1,0 +1,31 @@
+---
+const today = new Date();
+---
+
+<footer>
+  <div class="footer-content">
+    <p>&copy; {today.getFullYear()} LifeOnline | 0xR0K</p>
+    <p class="system-status">SYSTEM ONLINE</p>
+  </div>
+</footer>
+
+<style>
+  footer {
+    padding: 60px 0;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.8rem;
+    color: var(--text-main);
+    opacity: 0.6;
+    margin-top: auto;
+    background-color: var(--bg-card);
+  }
+  
+  .system-status {
+    font-size: 0.7em;
+    opacity: 0.5;
+    margin-top: 5px;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+</style>

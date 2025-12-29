@@ -1,8 +1,0 @@
-title: LifeOnline | 0xR0K
-description: Artículos técnicos y notas
-markdown: kramdown
-
-collections:
-  articulos:
-    output: true
-    permalink: /articulos/:name/

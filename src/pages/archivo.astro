@@ -1,0 +1,170 @@
+---
+/* --------------------------------------------
+   ██████╗ ██╗  ██╗██████╗  ██████╗ ██╗  ██╗
+  ██╔═══██╗╚██╗██╔╝██╔══██╗██╔═══██╗██║ ██╔╝
+  ██║   ██║ ╚███╔╝ ██████╔╝██║   ██║█████╔╝ 
+  ██║   ██║ ██╔██╗ ██╔══██╗██║   ██║██╔═██╗ 
+  ╚██████╔╝██╔╝ ██╗██║  ██║╚██████╔╝██║  ██╗
+   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝
+----------------------------------------------
+               Life Online 2026               */
+
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const categories = [...new Set(posts.flatMap(post => post.data.categories || []))].sort();
+const uncategorized = posts.filter(post => !post.data.categories || post.data.categories.length === 0);
+---
+
+<Layout title="Archivo" description="Índice completo del sistema">
+	<header class="page-header">
+		<h1 class="page-title">ÍNDICE DE SISTEMA</h1>
+		<div class="title-separator"></div>
+		<p class="page-subtitle">REGISTROS CLASIFICADOS</p>
+	</header>
+
+	<div class="archive-content">
+		{categories.map(category => (
+			<section class="category-section">
+				<h2 class="category-title">
+					<span class="hash">#</span> {category}
+				</h2>
+				<ul class="article-list">
+					{posts.filter(post => post.data.categories?.includes(category)).map(post => (
+						<li class="article-list-item">
+							<a href={`/articulos/${post.slug}/`} class="article-link">
+								<span class="article-list-title">{post.data.title}</span>
+								<span class="article-list-date">
+									{post.data.date.toLocaleDateString('es-ES', {
+										year: 'numeric', month: '2-digit', day: '2-digit'
+									})}
+								</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		))}
+
+		{uncategorized.length > 0 && (
+			<section class="category-section">
+				<h2 class="category-title">
+					<span class="hash">#</span> SIN CLASIFICAR
+				</h2>
+				<ul class="article-list">
+					{uncategorized.map(post => (
+						<li class="article-list-item">
+							<a href={`/articulos/${post.slug}/`} class="article-link">
+								<span class="article-list-title">{post.data.title}</span>
+								<span class="article-list-date">
+									{post.data.date.toLocaleDateString('es-ES', {
+										year: 'numeric', month: '2-digit', day: '2-digit'
+									})}
+								</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		)}
+	</div>
+</Layout>
+
+<style>
+	.page-header {
+		text-align: center;
+		margin-bottom: 60px;
+	}
+
+	.page-title {
+		font-size: 2rem;
+		font-weight: 800;
+		letter-spacing: 2px;
+		color: var(--text-bright);
+	}
+
+	.title-separator {
+		width: 60px;
+		height: 4px;
+		background-color: var(--accent);
+		margin: 20px auto 10px;
+		border-radius: 2px;
+		box-shadow: 0 0 10px var(--accent);
+	}
+
+	.page-subtitle {
+		color: var(--text-main);
+		opacity: 0.7;
+		font-size: 0.9rem;
+		text-transform: uppercase;
+		letter-spacing: 3px;
+	}
+
+	.category-section {
+		margin-bottom: 60px;
+	}
+
+	.category-title {
+		font-size: 1.5rem;
+		color: var(--accent);
+		border-bottom: 1px solid var(--border-color);
+		padding-bottom: 10px;
+		margin-bottom: 20px;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+	}
+
+	.hash {
+		color: var(--text-main);
+		opacity: 0.5;
+		margin-right: 5px;
+	}
+
+	.article-list {
+		list-style: none;
+		padding: 0;
+	}
+
+	.article-list-item {
+		border-bottom: 1px solid var(--border-color);
+		transition: background-color 0.2s;
+	}
+
+	.article-list-item:last-child {
+		border-bottom: none;
+	}
+
+	.article-link {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 15px 10px;
+		color: var(--text-main);
+		opacity: 0.8;
+	}
+
+	.article-link:hover {
+		background-color: var(--bg-card);
+		color: var(--text-bright);
+		opacity: 1;
+		padding-left: 15px;
+	}
+
+	.article-list-date {
+		font-family: var(--font-code);
+		font-size: 0.8rem;
+		opacity: 0.6;
+	}
+
+	@media (max-width: 768px) {
+		.article-link {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 5px;
+		}
+	}
+</style>

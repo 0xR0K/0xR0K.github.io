@@ -1,0 +1,83 @@
+---
+import Layout from './Layout.astro';
+
+const { title, description, date } = Astro.props;
+
+const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+}) : '';
+---
+
+<Layout title={title} description={description}>
+	<article class="article-container">
+		<header class="article-header">
+			<h1 class="article-title">{title}</h1>
+			{formattedDate && <p class="article-date">{formattedDate}</p>}
+			<div class="title-separator"></div>
+		</header>
+
+		<div class="article-content" id="markdown-content">
+			<slot />
+		</div>
+	</article>
+</Layout>
+
+<script>
+	document.addEventListener('astro:page-load', () => {
+		const blockquotes = document.querySelectorAll('blockquote');
+		
+		blockquotes.forEach(quote => {
+			const text = quote.textContent?.trim() || '';
+			const match = text.match(/^\[!(\w+)\]/);
+			
+			if (match) {
+				const type = match[1].toLowerCase();
+				const iconMap = {
+					note: '✎',
+					info: 'ℹ',
+					todo: '☐',
+					tip: '★',
+					important: '‼',
+					success: '✓',
+					question: '?',
+					warning: '⚠',
+					failure: '✕',
+					danger: '⚡',
+					bug: '☢',
+					example: '☞',
+					quote: '❝'
+				};
+
+				const icon = iconMap[type] || '✎';
+				quote.classList.add('callout', `callout-${type}`);
+				
+				const p = quote.querySelector('p');
+				if (p) {
+					p.innerHTML = p.innerHTML.replace(/^\[!(\w+)\]\s*/, '');
+				}
+
+				const header = document.createElement('div');
+				header.className = 'callout-header';
+				header.innerHTML = `<span class="callout-icon">${icon}</span> <strong>${type.toUpperCase()}</strong>`;
+				
+				quote.insertBefore(header, quote.firstChild);
+			}
+		});
+	}, { once: false });
+    
+    window.dispatchEvent(new Event('astro:page-load'));
+</script>
+
+<style>
+	.article-date {
+		text-align: center;
+		color: var(--text-main);
+		opacity: 0.6;
+		font-family: var(--font-code);
+		font-size: 0.9rem;
+		margin-top: -10px;
+		margin-bottom: 20px;
+	}
+</style>
