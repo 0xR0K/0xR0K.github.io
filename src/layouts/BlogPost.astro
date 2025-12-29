@@ -29,67 +29,23 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 		const content = document.getElementById('markdown-content');
 		if (!content) return;
 
-		const existingImages = content.querySelectorAll('img');
-		existingImages.forEach(img => {
-			const src = img.getAttribute('src');
-			if (src && src.includes('/images/')) {
-				const lowerSrc = src.toLowerCase();
-				if (src !== lowerSrc) {
-					img.src = lowerSrc;
-				}
-				img.onerror = function() {
-					this.style.display = 'none';
-				};
-			}
-		});
-
 		const currentSlug = window.location.pathname.replace(/\/$/, '').split('/').pop().toLowerCase();
 
-		const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null, false);
-		const nodesToReplace = [];
-		
-		while(walker.nextNode()) {
-			if (walker.currentNode.nodeValue && walker.currentNode.nodeValue.includes('![[')) {
-				nodesToReplace.push(walker.currentNode);
-			}
-		}
-
-		nodesToReplace.forEach(node => {
-			if (node.parentElement && ['SCRIPT', 'STYLE'].includes(node.parentElement.tagName)) return;
-
-			const fragment = document.createDocumentFragment();
-			const parts = node.nodeValue ? node.nodeValue.split(/(!\[\[.*?\]\])/g) : [];
-
-			parts.forEach(part => {
-				const match = part.match(/!\[\[(.*?)\]\]/);
-				if (match) {
-					const fileName = match[1].trim();
-					const imgPath = `/images/${currentSlug}/${fileName}`;
-					
-					const img = document.createElement('img');
-					img.src = imgPath;
-					img.alt = fileName;
-					img.loading = "lazy";
-					img.classList.add('obsidian-img');
-					
-					img.onerror = function() { 
-						this.style.display = 'none';
-					};
-
-					fragment.appendChild(img);
-				} else {
-					fragment.appendChild(document.createTextNode(part));
-				}
-			});
-
-			node.parentNode?.replaceChild(fragment, node);
+		content.innerHTML = content.innerHTML.replace(/!\[\[(.*?)\]\]/g, (match, fileName) => {
+			const cleanName = fileName.trim();
+			const imgPath = `/images/${currentSlug}/${cleanName}`;
+			return `<img src="${imgPath}" alt="${cleanName}" loading="lazy" class="obsidian-img" onerror="this.style.display='none'">`;
 		});
 
-		const blockquotes = document.querySelectorAll('blockquote');
+		const blockquotes = content.querySelectorAll('blockquote');
 		
 		blockquotes.forEach(quote => {
-			const text = quote.textContent?.trim() || '';
-			const match = text.match(/^\[!(\w+)\]/);
+			const firstP = quote.querySelector('p');
+			const textToCheck = firstP ? firstP.textContent : quote.textContent;
+			
+			if (!textToCheck) return;
+
+			const match = textToCheck.match(/^\[!(\w+)\]/);
 			
 			if (match && !quote.classList.contains('processed-callout')) {
 				const typeRaw = match[1];
@@ -107,7 +63,6 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 
 				const icon = iconMap[type] || '✎';
 				
-				const firstP = quote.querySelector('p');
 				if (firstP) {
 					const headerRegex = new RegExp(`\\[!${typeRaw}\\]\\s*(.*)`, "i");
 					const headerMatch = firstP.textContent?.match(headerRegex);
@@ -117,6 +72,7 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 					}
 
 					firstP.innerHTML = firstP.innerHTML.replace(new RegExp(`\\[!${typeRaw}\\]\\s*.*?(\\n|<br>|$)`, "i"), '');
+					
 					if (firstP.textContent.trim() === '') {
 						firstP.remove();
 					}
