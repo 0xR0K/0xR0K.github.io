@@ -29,6 +29,20 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 		const content = document.getElementById('markdown-content');
 		if (!content) return;
 
+		const existingImages = content.querySelectorAll('img');
+		existingImages.forEach(img => {
+			const src = img.getAttribute('src');
+			if (src && src.includes('/images/')) {
+				const lowerSrc = src.toLowerCase();
+				if (src !== lowerSrc) {
+					img.src = lowerSrc;
+				}
+				img.onerror = function() {
+					this.style.display = 'none';
+				};
+			}
+		});
+
 		const currentSlug = window.location.pathname.replace(/\/$/, '').split('/').pop().toLowerCase();
 
 		const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null, false);
@@ -49,7 +63,7 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 			parts.forEach(part => {
 				const match = part.match(/!\[\[(.*?)\]\]/);
 				if (match) {
-					const fileName = match[1];
+					const fileName = match[1].trim();
 					const imgPath = `/images/${currentSlug}/${fileName}`;
 					
 					const img = document.createElement('img');
