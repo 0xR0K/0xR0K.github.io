@@ -29,20 +29,6 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 		const content = document.getElementById('markdown-content');
 		if (!content) return;
 
-		const existingImages = content.querySelectorAll('img');
-		existingImages.forEach(img => {
-			const src = img.getAttribute('src');
-			if (src && src.includes('/images/')) {
-				const lowerSrc = src.toLowerCase();
-				if (src !== lowerSrc) {
-					img.src = lowerSrc;
-				}
-				img.onerror = function() {
-					this.style.display = 'none';
-				};
-			}
-		});
-
 		const currentSlug = window.location.pathname.replace(/\/$/, '').split('/').pop().toLowerCase();
 
 		const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null, false);
@@ -57,30 +43,40 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 		nodesToReplace.forEach(node => {
 			if (node.parentElement && ['SCRIPT', 'STYLE'].includes(node.parentElement.tagName)) return;
 
+			const text = node.nodeValue;
+			const regex = /!\[\[(.*?)\]\]/g;
+			
+			if (!regex.test(text)) return;
+
 			const fragment = document.createDocumentFragment();
-			const parts = node.nodeValue ? node.nodeValue.split(/(!\[\[.*?\]\])/g) : [];
+			let lastIndex = 0;
+			let match;
 
-			parts.forEach(part => {
-				const match = part.match(/!\[\[(.*?)\]\]/);
-				if (match) {
-					const fileName = match[1].trim();
-					const imgPath = `/images/${currentSlug}/${fileName}`;
-					
-					const img = document.createElement('img');
-					img.src = imgPath;
-					img.alt = fileName;
-					img.loading = "lazy";
-					img.classList.add('obsidian-img');
-					
-					img.onerror = function() { 
-						this.style.display = 'none';
-					};
-
-					fragment.appendChild(img);
-				} else {
-					fragment.appendChild(document.createTextNode(part));
+			while ((match = regex.exec(text)) !== null) {
+				if (match.index > lastIndex) {
+					fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
 				}
-			});
+
+				const fileName = match[1].trim();
+				const imgPath = `/images/${currentSlug}/${fileName}`;
+				
+				const img = document.createElement('img');
+				img.src = imgPath;
+				img.alt = fileName;
+				img.loading = "lazy";
+				img.classList.add('obsidian-img');
+				
+				img.onerror = function() { 
+					this.style.display = 'none';
+				};
+
+				fragment.appendChild(img);
+				lastIndex = regex.lastIndex;
+			}
+
+			if (lastIndex < text.length) {
+				fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
+			}
 
 			node.parentNode?.replaceChild(fragment, node);
 		});
@@ -148,7 +144,7 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 	processContent();
 </script>
 
-<style>
+<style is:global>
 	.article-date {
 		text-align: center;
 		color: var(--text-main);
@@ -169,4 +165,54 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
         border: 1px solid var(--border-color);
         box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
+
+	blockquote.callout {
+		margin: 2.5em 0;
+		padding: 0;
+		border: 1px solid var(--border-color);
+		border-left-width: 5px;
+		background-color: var(--bg-card);
+		border-radius: 6px;
+		font-style: normal;
+		overflow: hidden;
+	}
+
+	.callout-header {
+		padding: 10px 15px;
+		background-color: rgba(255, 255, 255, 0.03);
+		font-weight: 700;
+		font-size: 0.95em;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+		color: var(--text-bright);
+	}
+
+	.callout-icon {
+		font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
+		font-size: 1.1em;
+	}
+
+	.callout-content {
+		padding: 15px 20px;
+		font-size: 0.95em;
+		color: var(--text-main);
+	}
+	
+	.callout-content p:last-child {
+		margin-bottom: 0;
+	}
+
+	.callout-note, .callout-info { border-left-color: var(--color-blue); }
+	.callout-note .callout-header { color: var(--color-blue); background-color: rgba(139, 233, 253, 0.05); }
+
+	.callout-tip, .callout-success { border-left-color: var(--color-green); }
+	.callout-tip .callout-header { color: var(--color-green); background-color: rgba(80, 250, 123, 0.05); }
+
+	.callout-warning, .callout-attention { border-left-color: var(--color-orange); }
+	.callout-warning .callout-header { color: var(--color-orange); background-color: rgba(255, 184, 108, 0.05); }
+
+	.callout-danger, .callout-error, .callout-bug { border-left-color: var(--color-red); }
+	.callout-danger .callout-header { color: var(--color-red); background-color: rgba(255, 85, 85, 0.05); }
 </style>
