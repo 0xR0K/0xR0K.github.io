@@ -25,44 +25,96 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 </Layout>
 
 <script>
-	document.addEventListener('astro:page-load', () => {
+	function processContent() {
+		const content = document.getElementById('markdown-content');
+		if (!content) return;
+
+		const currentSlug = window.location.pathname.replace(/\/$/, '').split('/').pop();
+
+		const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null, false);
+		const nodesToReplace = [];
+		
+		while(walker.nextNode()) {
+			if (walker.currentNode.nodeValue && walker.currentNode.nodeValue.includes('![[')) {
+				nodesToReplace.push(walker.currentNode);
+			}
+		}
+
+		nodesToReplace.forEach(node => {
+			if (node.parentElement && ['SCRIPT', 'STYLE'].includes(node.parentElement.tagName)) return;
+
+			const fragment = document.createDocumentFragment();
+			const parts = node.nodeValue ? node.nodeValue.split(/(!\[\[.*?\]\])/g) : [];
+
+			parts.forEach(part => {
+				const match = part.match(/!\[\[(.*?)\]\]/);
+				if (match) {
+					const fileName = match[1];
+					const imgPath = `/images/${currentSlug}/${fileName}`;
+					
+					const img = document.createElement('img');
+					img.src = imgPath;
+					img.alt = fileName;
+					img.loading = "lazy";
+					img.classList.add('obsidian-img');
+					
+					img.onerror = function() { 
+						this.style.display = 'none';
+					};
+
+					fragment.appendChild(img);
+				} else {
+					fragment.appendChild(document.createTextNode(part));
+				}
+			});
+
+			node.parentNode?.replaceChild(fragment, node);
+		});
+
 		const blockquotes = document.querySelectorAll('blockquote');
 		
 		blockquotes.forEach(quote => {
 			const text = quote.textContent?.trim() || '';
 			const match = text.match(/^\[!(\w+)\]/);
 			
-			if (match) {
-				const type = match[1].toLowerCase();
+			if (match && !quote.classList.contains('processed-callout')) {
+				const typeRaw = match[1];
+				const type = typeRaw.toLowerCase();
+				let titleText = type.toUpperCase();
+
+				quote.classList.add('processed-callout');
+
 				const iconMap = {
-					note: '✎',
-					info: 'ℹ',
-					todo: '☐',
-					tip: '★',
-					important: '‼',
-					success: '✓',
-					question: '?',
-					warning: '⚠',
-					failure: '✕',
-					danger: '⚡',
-					bug: '☢',
-					example: '☞',
-					quote: '❝'
+					note: '✎', info: 'ℹ', todo: '☐', tip: '★',
+					important: '‼', success: '✓', question: '?',
+					warning: '⚠', failure: '✕', danger: '⚡',
+					bug: '☢', example: '☞', quote: '❝'
 				};
 
-				// @ts-ignore
 				const icon = iconMap[type] || '✎';
 				
+				const firstP = quote.querySelector('p');
+				if (firstP) {
+					const headerRegex = new RegExp(`\\[!${typeRaw}\\]\\s*(.*)`, "i");
+					const headerMatch = firstP.textContent?.match(headerRegex);
+					
+					if (headerMatch && headerMatch[1] && headerMatch[1].trim() !== '') {
+						titleText = headerMatch[1].trim();
+					}
+
+					firstP.innerHTML = firstP.innerHTML.replace(new RegExp(`\\[!${typeRaw}\\]\\s*.*?(\\n|<br>|$)`, "i"), '');
+                    if (firstP.textContent.trim() === '') {
+                        firstP.remove();
+                    }
+				} else {
+                    quote.innerHTML = quote.innerHTML.replace(new RegExp(`\\[!${typeRaw}\\]\\s*.*?(\\n|<br>|$)`, "i"), '');
+                }
+
 				quote.classList.add('callout', `callout-${type}`);
-				
-				const p = quote.querySelector('p');
-				if (p) {
-					p.innerHTML = p.innerHTML.replace(/^\[!(\w+)\]\s*/, '');
-				}
 
 				const header = document.createElement('div');
 				header.className = 'callout-header';
-				header.innerHTML = `<span class="callout-icon">${icon}</span> <strong>${type.toUpperCase()}</strong>`;
+				header.innerHTML = `<span class="callout-icon">${icon}</span> <strong>${titleText}</strong>`;
 				
 				const contentWrapper = document.createElement('div');
 				contentWrapper.className = 'callout-content';
@@ -75,9 +127,11 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 				quote.appendChild(contentWrapper);
 			}
 		});
-	}, { once: false });
-    
-    window.dispatchEvent(new Event('astro:page-load'));
+	}
+
+	document.addEventListener('DOMContentLoaded', processContent);
+	document.addEventListener('astro:page-load', processContent);
+    processContent();
 </script>
 
 <style>
@@ -91,4 +145,14 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 		text-transform: uppercase;
 		letter-spacing: 1px;
 	}
+    
+    .obsidian-img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 30px auto;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
 </style>
