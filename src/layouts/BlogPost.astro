@@ -29,15 +29,20 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 		const content = document.getElementById('markdown-content');
 		if (!content) return;
 
-		const currentSlug = window.location.pathname.replace(/\/$/, '').split('/').pop().toLowerCase();
+		const currentSlug = window.location.pathname.replace(/\/$/, '').split('/').pop();
 
-		content.innerHTML = content.innerHTML.replace(/!\[\[(.*?)\]\]/g, (match, fileName) => {
+		const contentHTML = content.innerHTML;
+		const newContent = contentHTML.replace(/!\[\[(.*?)\]\]/g, (match, fileName) => {
 			const cleanName = fileName.trim();
 			const imgPath = `/images/${currentSlug}/${cleanName}`;
 			return `<img src="${imgPath}" alt="${cleanName}" loading="lazy" class="obsidian-img" onerror="this.style.display='none'">`;
 		});
+		
+		if (content.innerHTML !== newContent) {
+			content.innerHTML = newContent;
+		}
 
-		const blockquotes = content.querySelectorAll('blockquote');
+		const blockquotes = document.querySelectorAll('blockquote');
 		
 		blockquotes.forEach(quote => {
 			const firstP = quote.querySelector('p');
@@ -61,6 +66,7 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 					bug: '☢', example: '☞', quote: '❝'
 				};
 
+				// @ts-ignore
 				const icon = iconMap[type] || '✎';
 				
 				if (firstP) {
