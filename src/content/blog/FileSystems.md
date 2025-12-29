@@ -1,7 +1,6 @@
 --- 
 title: Tipos de File Systems 
 date: 2025-12-28 20:07 
-layout: post
 
 categories: [Arquitectura de Sistemas] 
 ---

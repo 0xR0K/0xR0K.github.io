@@ -1,7 +1,6 @@
 --- 
 title: Configuración para un Nvidia user
 date: 2025-12-26 15:05 
-layout: post
 categories: [gestores-de-ventanas, Hyprland] 
 ---
 A ver, mazapan. Si estás leyendo esto es por dos razones: o te va la marcha sado-masoquista, o te has gastado el sueldo en una gráfica de NVIDIA y ahora te das cuenta de que en Linux te odian.

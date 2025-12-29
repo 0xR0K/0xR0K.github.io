@@ -1,7 +1,6 @@
 --- 
 title: Mi aventura en Sway + un poco de historia
 date: 2025-11-16 11:11 
-layout: post
 categories: [gestores-de-ventanas] 
 ---
 Si has leído algo sobre mí, sabrás que llevo más de un lustro usando **i3WM** sobre Arch Linux. Para mí, ha sido el estándar, el lugar donde siempre he acabado regresando.

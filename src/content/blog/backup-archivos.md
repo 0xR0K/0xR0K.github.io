@@ -1,7 +1,6 @@
 --- 
 title: Como hacer un Backup de tus archivos. Cifrar, comprimir, Sincronizar y mas cosas.
 date: 2025-11-09 11:29 
-layout: post
 categories: [Forense] 
 ---
 
