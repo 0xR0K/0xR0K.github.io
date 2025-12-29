@@ -5,11 +5,13 @@ import { visit } from 'unist-util-visit';
 function obsidianImageFix() {
   return function (tree, file) {
     const filepath = file.history[0];
-    const filename = filepath.split('/').pop().replace('.md', '');
+    const filename = filepath.split('/').pop().replace('.md', '').toLowerCase();
+    
     visit(tree, 'text', (node, index, parent) => {
       const regex = /!\[\[(.*?)\]\]/g;
       if (regex.test(node.value)) {
-        const matches = [...node.value.matchAll(regex)];      
+        const matches = [...node.value.matchAll(regex)];
+        
         const newNodes = matches.map(match => {
            const imageName = match[1];
            return {
@@ -17,7 +19,8 @@ function obsidianImageFix() {
              url: `/images/${filename}/${imageName}`,
              alt: imageName
            };
-        });    
+        });
+        
         if(parent && typeof index === 'number') {
            parent.children.splice(index, 1, ...newNodes);
         }
@@ -25,14 +28,15 @@ function obsidianImageFix() {
     });
   };
 }
+
 export default defineConfig({
-  site: 'https://0xr0k.github.io', // Tu URL real
+  site: 'https://0xr0k.github.io',
   base: '/',
   integrations: [sitemap()],
   markdown: {
-    remarkPlugins: [obsidianImageFix], // Activamos nuestro plugin
+    remarkPlugins: [obsidianImageFix],
     shikiConfig: {
-      theme: 'dracula', // Tema de código estilo Cyberpunk
+      theme: 'dracula',
     },
   },
 });
