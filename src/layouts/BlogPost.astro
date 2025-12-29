@@ -29,42 +29,73 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 		const content = document.getElementById('markdown-content');
 		if (!content) return;
 
-		// 1. Obtener el slug actual
-		const currentSlug = window.location.pathname.replace(/\/$/, '').split('/').pop().toLowerCase();
-
-		// 2. Reemplazar imágenes Obsidian: ![[imagen.png]] -> <img src="/images/slug/imagen.png">
-		// Usamos una expresión regular global para encontrar todas las ocurrencias
-		// Capturamos el nombre del archivo en el grupo 1
-		content.innerHTML = content.innerHTML.replace(/!\[\[(.*?)\]\]/g, (match, fileName) => {
-			const cleanName = fileName.trim();
-			// Construimos la ruta asumiendo la estructura correcta
-			const imgPath = `/images/${currentSlug}/${cleanName}`;
-			
-			// Devolvemos la etiqueta HTML de la imagen
-			return `<img src="${imgPath}" alt="${cleanName}" loading="lazy" class="obsidian-img" onerror="this.style.display='none'">`;
+		const existingImages = content.querySelectorAll('img');
+		existingImages.forEach(img => {
+			const src = img.getAttribute('src');
+			if (src && src.includes('/images/')) {
+				const lowerSrc = src.toLowerCase();
+				if (src !== lowerSrc) {
+					img.src = lowerSrc;
+				}
+				img.onerror = function() {
+					this.style.display = 'none';
+				};
+			}
 		});
 
-		// 3. Procesar Callouts (que ya funcionan)
+		const currentSlug = window.location.pathname.replace(/\/$/, '').split('/').pop().toLowerCase();
+
+		const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null, false);
+		const nodesToReplace = [];
+		
+		while(walker.nextNode()) {
+			if (walker.currentNode.nodeValue && walker.currentNode.nodeValue.includes('![[')) {
+				nodesToReplace.push(walker.currentNode);
+			}
+		}
+
+		nodesToReplace.forEach(node => {
+			if (node.parentElement && ['SCRIPT', 'STYLE'].includes(node.parentElement.tagName)) return;
+
+			const fragment = document.createDocumentFragment();
+			const parts = node.nodeValue ? node.nodeValue.split(/(!\[\[.*?\]\])/g) : [];
+
+			parts.forEach(part => {
+				const match = part.match(/!\[\[(.*?)\]\]/);
+				if (match) {
+					const fileName = match[1].trim();
+					const imgPath = `/images/${currentSlug}/${fileName}`;
+					
+					const img = document.createElement('img');
+					img.src = imgPath;
+					img.alt = fileName;
+					img.loading = "lazy";
+					img.classList.add('obsidian-img');
+					
+					img.onerror = function() { 
+						this.style.display = 'none';
+					};
+
+					fragment.appendChild(img);
+				} else {
+					fragment.appendChild(document.createTextNode(part));
+				}
+			});
+
+			node.parentNode?.replaceChild(fragment, node);
+		});
+
 		const blockquotes = document.querySelectorAll('blockquote');
 		
 		blockquotes.forEach(quote => {
-			// Buscamos el patrón [!TIPO] al principio del texto
-			const firstP = quote.querySelector('p');
-			// Usamos textContent para evitar problemas con etiquetas HTML dentro
-			const textToCheck = firstP ? firstP.textContent : quote.textContent;
+			const text = quote.textContent?.trim() || '';
+			const match = text.match(/^\[!(\w+)\]/);
 			
-			// Si no hay texto, saltamos
-			if (!textToCheck) return;
-
-			const match = textToCheck.match(/^\[!(\w+)\]/);
-			
-			// Solo procesamos si encontramos el patrón y no lo hemos procesado ya
 			if (match && !quote.classList.contains('processed-callout')) {
 				const typeRaw = match[1];
 				const type = typeRaw.toLowerCase();
 				let titleText = type.toUpperCase();
 
-				// Marcamos para no procesarlo dos veces
 				quote.classList.add('processed-callout');
 
 				const iconMap = {
@@ -74,10 +105,9 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 					bug: '☢', example: '☞', quote: '❝'
 				};
 
-				// @ts-ignore
 				const icon = iconMap[type] || '✎';
 				
-				// Intentamos recuperar el título personalizado si existe
+				const firstP = quote.querySelector('p');
 				if (firstP) {
 					const headerRegex = new RegExp(`\\[!${typeRaw}\\]\\s*(.*)`, "i");
 					const headerMatch = firstP.textContent?.match(headerRegex);
@@ -86,15 +116,11 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 						titleText = headerMatch[1].trim();
 					}
 
-					// Limpiamos la etiqueta del párrafo original
 					firstP.innerHTML = firstP.innerHTML.replace(new RegExp(`\\[!${typeRaw}\\]\\s*.*?(\\n|<br>|$)`, "i"), '');
-					
-					// Si el párrafo queda vacío, lo eliminamos
-					if (firstP.textContent?.trim() === '') {
+					if (firstP.textContent.trim() === '') {
 						firstP.remove();
 					}
 				} else {
-					// Fallback si no hay <p>
 					quote.innerHTML = quote.innerHTML.replace(new RegExp(`\\[!${typeRaw}\\]\\s*.*?(\\n|<br>|$)`, "i"), '');
 				}
 
@@ -107,7 +133,6 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 				const contentWrapper = document.createElement('div');
 				contentWrapper.className = 'callout-content';
 				
-				// Movemos el contenido
 				while (quote.firstChild) {
 					contentWrapper.appendChild(quote.firstChild);
 				}
@@ -118,7 +143,6 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 		});
 	}
 
-	// Ejecutar en carga inicial y navegaciones
 	document.addEventListener('DOMContentLoaded', processContent);
 	document.addEventListener('astro:page-load', processContent);
 	processContent();
