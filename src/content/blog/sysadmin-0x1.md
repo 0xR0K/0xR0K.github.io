@@ -12,7 +12,8 @@ Mucha gente se instala Linux (cualquier distro) y se cree que es Neo en Matrix. 
 
 Hoy vamos a dejarnos de tonterías y vamos a aprender a auditar un sistema de verdad. Nada de "instalar un antivirus". Vamos a ensuciarnos las manos con logs, sockets, el kernel y un poco de Python. Si te da miedo la terminal, cierra esto y vuelve a Windows.
 
-> [!NOTE] Este articulo esta creado para SysAdmins. Pero desde ArchLinux Este artículo se centra en la arquitectura de Arch Linux, que es "systemd-heavy". Si usas Alpine, Void o Gentoo con OpenRC, la mitad de estos comandos (journalctl) no te servirán, aunque la lógica de red (ss, lsof) es universal.
+> [!NOTE] Este articulo esta creado para SysAdmins. 
+> Pero desde ArchLinux Este artículo se centra en la arquitectura de Arch Linux, que es "systemd-heavy". Si usas Alpine, Void o Gentoo con OpenRC, la mitad de estos comandos (journalctl) no te servirán, aunque la lógica de red (ss, lsof) es universal.
 
 ---
 ## 1. Arquitectura de Logs en Systemd: Volatilidad vs. Persistencia
@@ -59,7 +60,8 @@ Olvídate de hacer scroll infinito. Aquí tienes los comandos para filtrar el ru
 - **Ver lo que está pasando AHORA MISMO (Live):** `journalctl -f`. _Esto es como ver Matrix en tiempo real._
 - **Filtrar por Unidad (Service Unit):** Si sospechas del servidor SSH (el vector de ataque más común), no mires los logs de la impresora. `journalctl -u sshd`. Esto aísla exclusivamente los logs del demonio SSH.
 
-> [!WARNING] Aclaracion: Si ves miles de líneas en rojo intentando entrar por SSH, felicidades, has descubierto Internet. Si ves un "Accepted password", y no has sido tú, o no conoces la procedencia, es posible que una familia de Kazajistán esté conectada a tu máquina.
+> [!WARNING] Aclaracion: 
+> Si ves miles de líneas en rojo intentando entrar por SSH, felicidades, has descubierto Internet. Si ves un "Accepted password", y no has sido tú, o no conoces la procedencia, es posible que una familia de Kazajistán esté conectada a tu máquina.
 
 ### Exportación para análisis (JSON)
 Si eres de los que les gusta programar sus propias herramientas. `journalctl` puede escupir los datos en JSON. `journalctl -u sshd -o json-pretty`. Esto es vital porque nos permite procesar fechas, IPs y procesos de forma programática sin pelear con expresiones regulares imposibles.
@@ -127,9 +129,11 @@ diff <(ps aux | awk '{print $1,$11}' | sort -u) <(lsof -i | awk '{print $1,$9}' 
 ```
 Si este comando devuelve líneas que aparecen en `lsof` pero no en `ps`, estás ante un proceso oculto.
 
-> [!CAUTION] PROTOCOLO DE EMERGENCIA Si detectas una discrepancia aquí, **NO sigas investigando con la red conectada.** Tira del cable Ethernet o apaga la Wi-Fi inmediatamente. Si el atacante ve que le estás investigando, puede borrarlo todo o cifrar tu disco. Después, la recomendación profesional es **backup de datos críticos y reinstalación limpia**. Nunca te fíes de un sistema comprometido a nivel de root.
+> [!CAUTION] PROTOCOLO DE EMERGENCIA 
+> Si detectas una discrepancia aquí, **NO sigas investigando con la red conectada.** Tira del cable Ethernet o apaga la Wi-Fi inmediatamente. Si el atacante ve que le estás investigando, puede borrarlo todo o cifrar tu disco. Después, la recomendación profesional es **backup de datos críticos y reinstalación limpia**. Nunca te fíes de un sistema comprometido a nivel de root.
 
-> [!NOTE] Explicacion técnica `ps` lee de `/proc`, mientras que `lsof` interroga al sistema de archivos y sockets. Si un binario está trojanizado (modificado por el atacante), mentirá en el primer comando, pero la discrepancia con el segundo cantará.
+> [!NOTE] Explicacion técnica 
+> `ps` lee de `/proc`, mientras que `lsof` interroga al sistema de archivos y sockets. Si un binario está trojanizado (modificado por el atacante), mentirá en el primer comando, pero la discrepancia con el segundo cantará.
 
 ### Herramientas automáticas y Kernel
 No te hagas el héroe si no hace falta. Usa herramientas diseñadas para esto:

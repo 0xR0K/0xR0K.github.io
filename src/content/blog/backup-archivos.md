@@ -145,7 +145,8 @@ Veamos esas flags:
   
 - **`/mnt/DiscoExterno/MisDocumentos`**: La ruta física donde se guardarán los datos. Borg no guarda un archivo gigante, sino una estructura de carpetas con miles de archivos pequeños ("chunks").
 
->[!ALERT] Alternativa peligrosa Existe el modo `keyfile` (que guarda la llave en tu PC, no en el disco). Es peligroso para USBs portátiles: si pierdes tu PC, pierdes la llave para abrir el USB. Por eso usamos `repokey`.
+>[!ALERT] Alternativa peligrosa 
+> Existe el modo `keyfile` (que guarda la llave en tu PC, no en el disco). Es peligroso para USBs portátiles: si pierdes tu PC, pierdes la llave para abrir el USB. Por eso usamos `repokey`.
 ## Paso 3: Creando el primer Backup
 El repositorio de Borg esta listo. Ahora vamos a empezar a llenarlo con nuestros archivos
 ```bash
