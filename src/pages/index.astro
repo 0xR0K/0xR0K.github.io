@@ -24,20 +24,14 @@ const posts = (await getCollection('blog')).sort(
 </Layout>
 
 <style>
-	/* --- DISEÑO BASE (Móvil) --- */
 	.posts-grid {
 		display: grid;
-		/* 1 columna que ocupa todo el ancho */
-		grid-template-columns: 1fr; 
 		gap: 30px;
+		grid-template-columns: 1fr;
 	}
-
-	/* --- DISEÑO ESCRITORIO --- */
-	/* Se activa SOLO si la pantalla es mayor a 768px (Tablets y PC) */
-	@media (min-width: 768px) {
+	@media (min-width: 600px) {
 		.posts-grid {
-			/* Forzamos 2 columnas de igual tamaño */
-			grid-template-columns: repeat(2, 1fr); 
+			grid-template-columns: repeat(2, 1fr) !important;
 		}
 	}
 </style>
