@@ -50,7 +50,9 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 					quote: '❝'
 				};
 
+				// @ts-ignore
 				const icon = iconMap[type] || '✎';
+				
 				quote.classList.add('callout', `callout-${type}`);
 				
 				const p = quote.querySelector('p');
@@ -62,7 +64,15 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 				header.className = 'callout-header';
 				header.innerHTML = `<span class="callout-icon">${icon}</span> <strong>${type.toUpperCase()}</strong>`;
 				
-				quote.insertBefore(header, quote.firstChild);
+				const contentWrapper = document.createElement('div');
+				contentWrapper.className = 'callout-content';
+				
+				while (quote.firstChild) {
+					contentWrapper.appendChild(quote.firstChild);
+				}
+
+				quote.appendChild(header);
+				quote.appendChild(contentWrapper);
 			}
 		});
 	}, { once: false });
@@ -77,7 +87,8 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 		opacity: 0.6;
 		font-family: var(--font-code);
 		font-size: 0.9rem;
-		margin-top: -10px;
-		margin-bottom: 20px;
+		margin-top: 10px;
+		text-transform: uppercase;
+		letter-spacing: 1px;
 	}
 </style>
