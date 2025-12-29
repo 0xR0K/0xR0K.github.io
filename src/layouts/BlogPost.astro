@@ -30,10 +30,9 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 		if (!content) return;
 
 		const currentSlug = window.location.pathname.replace(/\/$/, '').split('/').pop();
-
 		const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null, false);
 		const nodesToReplace = [];
-		
+
 		while(walker.nextNode()) {
 			if (walker.currentNode.nodeValue && walker.currentNode.nodeValue.includes('![[')) {
 				nodesToReplace.push(walker.currentNode);
@@ -59,7 +58,8 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 					img.classList.add('obsidian-img');
 					
 					img.onerror = function() { 
-						this.style.display = 'none';
+						this.style.display = 'none'; // Ocultar si falla
+						console.warn('Imagen no encontrada:', imgPath);
 					};
 
 					fragment.appendChild(img);
@@ -74,8 +74,12 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 		const blockquotes = document.querySelectorAll('blockquote');
 		
 		blockquotes.forEach(quote => {
-			const text = quote.textContent?.trim() || '';
-			const match = text.match(/^\[!(\w+)\]/);
+			const firstP = quote.querySelector('p');
+			const textToCheck = firstP ? firstP.textContent : quote.textContent;
+			
+			if (!textToCheck) return;
+
+			const match = textToCheck.match(/^\[!(\w+)\]/);
 			
 			if (match && !quote.classList.contains('processed-callout')) {
 				const typeRaw = match[1];
@@ -84,7 +88,7 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 
 				quote.classList.add('processed-callout');
 
-				const iconMap = {
+				const iconMap: Record<string, string> = {
 					note: '✎', info: 'ℹ', todo: '☐', tip: '★',
 					important: '‼', success: '✓', question: '?',
 					warning: '⚠', failure: '✕', danger: '⚡',
@@ -93,7 +97,6 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 
 				const icon = iconMap[type] || '✎';
 				
-				const firstP = quote.querySelector('p');
 				if (firstP) {
 					const headerRegex = new RegExp(`\\[!${typeRaw}\\]\\s*(.*)`, "i");
 					const headerMatch = firstP.textContent?.match(headerRegex);
@@ -103,12 +106,12 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 					}
 
 					firstP.innerHTML = firstP.innerHTML.replace(new RegExp(`\\[!${typeRaw}\\]\\s*.*?(\\n|<br>|$)`, "i"), '');
-                    if (firstP.textContent.trim() === '') {
-                        firstP.remove();
-                    }
+					if (firstP.textContent?.trim() === '') {
+						firstP.remove();
+					}
 				} else {
-                    quote.innerHTML = quote.innerHTML.replace(new RegExp(`\\[!${typeRaw}\\]\\s*.*?(\\n|<br>|$)`, "i"), '');
-                }
+					quote.innerHTML = quote.innerHTML.replace(new RegExp(`\\[!${typeRaw}\\]\\s*.*?(\\n|<br>|$)`, "i"), '');
+				}
 
 				quote.classList.add('callout', `callout-${type}`);
 
@@ -128,10 +131,9 @@ const formattedDate = date ? new Date(date).toLocaleDateString('es-ES', {
 			}
 		});
 	}
-
 	document.addEventListener('DOMContentLoaded', processContent);
 	document.addEventListener('astro:page-load', processContent);
-    processContent();
+	processContent();
 </script>
 
 <style>
