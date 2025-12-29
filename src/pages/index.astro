@@ -26,13 +26,11 @@ const posts = (await getCollection('blog')).sort(
 <style>
 	.posts-grid {
 		display: grid;
-		/* 1 columna que ocupa todo el espacio disponible */
 		grid-template-columns: 1fr;
 		gap: 30px;
 	}
 	@media (min-width: 768px) {
 		.posts-grid {
-			/* Forzamos EXPLICITAMENTE 2 columnas iguales */
 			grid-template-columns: repeat(2, 1fr);
 		}
 	}
