@@ -1,7 +1,7 @@
 --- 
 title: ArchLinux Guia de Instalacion
 date: 2026-01-06 13:00 
-layout: post
+
 categories: [ArchLinux, Instalacion] 
 ---
 
