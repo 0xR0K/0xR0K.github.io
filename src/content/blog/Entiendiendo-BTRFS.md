@@ -86,9 +86,12 @@ BTRFS no duplica archivos preventivamente. Solo **preserva** los bloques que el 
 | **Modificar 1MB de un archivo de 1GB** | No. Solo escribe el MB nuevo.               | 1MB (el bloque viejo se queda para el snapshot). |
 | **Leer desde el Snapshot**             | No. Lee los mismos bloques que el original. | 0.                                               |
 # 3. Administración de una partición BTRFS
+
 Tener BTRFS sin herramientas de gestión es como tener un Ferrari y conducirlo en primera. Necesitas un stack tecnológico para aprovechar toda la potencia.
+
 ## 3.1 El Stack Esencial: Snapper y su ecosistema
 **Snapper** es la herramienta de referencia. Para que todo funcione como un reloj, instalaremos también el soporte para el menú de arranque y las alertas del sistema.
+
 **Instalación:**
 ```bash
 sudo pacman -S snapper snap-pac grub-btrfs inotify-tools
@@ -98,50 +101,44 @@ _Nota: `inotify-tools` es imprescindible para que `grub-btrfs` detecte nuevos sn
 **Configuración "Estilo Capi" (Integración con la Guía):** Si has seguido mi guía, ya tienes el subvolumen `@snapshots`. Pero Snapper, por defecto, intenta crear su propio subvolumen en `/.snapshots`. Tenemos que forzarlo a usar el nuestro:
 1. **Crear configuración:** `sudo snapper -c root create-config /`
 2. **Limpiar el desastre inicial:** Snapper habrá creado un subvolumen en `/.snapshots`. Vamos a borrarlo para montar el nuestro:
+    
 ```bash
 sudo umount /.snapshots
-sudo rm -rf /.snapshots### 1. El Snapshot: Un clon de punteros
-
-Un snapshot **no duplica archivos** ni crea un archivo de "backup" (como un .zip o .iso).
-
-- **A bajo nivel:** BTRFS simplemente hace una copia de la estructura del **B-Tree** (los metadatos).
-    
-- **Estado inicial:** Tienes dos árboles (Original y Snapshot) cuyos punteros señalan a las **mismas direcciones físicas** en el disco. Por eso ocupa 0 bytes adicionales al momento de crearse.
-    
-
-### 2. El cambio: La divergencia de datos
-
-El espacio solo se consume cuando los datos del sistema "maestro" y el snapshot empiezan a ser diferentes.
-
-- **Si modificas el origi**
+sudo rm -rf /.snapshots
 sudo mkdir /.snapshots
 sudo mount -a # Esto montará nuestro subvolumen @snapshots definido en /etc/fstab
 ```
+
 3. **Permisos y Usuario:** Para que no tengas que usar `sudo` para listar snapshots, ajusta el archivo `/etc/snapper/configs/root`:
+
 ```bash
 ALLOW_USERS="tu_usuario"
 TIMELINE_CLEANUP="yes"
 ```
-## 3.2 Automatización: snap-pac
+##### 3.2 Automatización: snap-pac
 **snap-pac** es el hook de pacman. No necesita configuración extra; una vez instalado, cada `pacman -Syu` generará dos snapshots: uno "pre" y otro "post".
+
 **Administración básica:**
 - **Listar:** `snapper list`
 - **Borrar basura:** `snapper delete ID` (donde ID es el número del snapshot).
 - **Configurar límites:** Edita `/etc/snapper/configs/root`. Por defecto, Snapper guarda demasiados. Yo recomiendo bajar los límites de `NUMBER_LIMIT` a algo como 5 o 10 para no saturar los metadatos.
 ## 3.3 Recuperación en Caliente: grub-btrfs
 Para que tus snapshots aparezcan en el menú de GRUB automáticamente cada vez que se crea uno nuevo:
+
 ```bash
 sudo systemctl enable --now grub-btrfsd.service
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 ## 3.4 El Proceso de Rollback (Restauración)
 **A. El método "Lazy" (Vía GRUB):** Reinicias, eliges el snapshot y arrancas. El sistema estará tal cual estaba antes del fallo. Para hacerlo permanente, una vez dentro del sistema "recuperado":
-```bash
+
+```
 sudo snapper rollback
 ```
 _Nota: Esto hará que el sistema tome ese snapshot como la nueva raíz real._
 
 **B. El método Manual (Desde LiveUSB):** Si el desastre es total:
+
 ```bash
 mount /dev/nvme0n1p3 /mnt
 mv /mnt/@ /mnt/@_roto
@@ -150,13 +147,13 @@ btrfs subvolume snapshot /mnt/@snapshots/ID/snapshot /mnt/@
 ## 3.5 Alternativas y GUIs
 - **Timeshift:** Si prefieres algo visual y no te importa que sea menos flexible. Es "el botón de pánico" para el usuario que no quiere tocar la terminal.
 - **BTRFS Assistant:** Excelente front-end para Snapper. Te permite ver el espacio que consume cada snapshot y hacer mantenimiento sin sudar.
-# 4. Mantenimiento para no ser un mono copia codigo
+## 4. Mantenimiento para no ser un "Usuario Zombi"
 BTRFS requiere un mínimo de atención para no degradarse:
 1. **Scrub:** Verificación de integridad. Ejecútalo una vez al mes:
-```bash
-sudo btrfs scrub start /
-```
+    ```bash
+    sudo btrfs scrub start /
+    ```
 2. **Balance:** Solo si has hecho cambios masivos de discos o el espacio libre reportado es incoherente.
 3. **Check de espacio:** Olvida `df -h`. La verdad está en: `btrfs filesystem usage /`.
-## Conclusión
+##### Conclusión
 La verdadera maestría en Arch Linux no consiste en no romper nada; eso es imposible si realmente estás aprendiendo. La maestría consiste en **diseñar una arquitectura que te permita fallar de forma segura.**
