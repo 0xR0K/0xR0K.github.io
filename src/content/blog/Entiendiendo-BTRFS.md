@@ -115,7 +115,7 @@ sudo mount -a # Esto montará nuestro subvolumen @snapshots definido en /etc/fst
 ALLOW_USERS="tu_usuario"
 TIMELINE_CLEANUP="yes"
 ```
-##### 3.2 Automatización: snap-pac
+## 3.2 Automatización: snap-pac
 **snap-pac** es el hook de pacman. No necesita configuración extra; una vez instalado, cada `pacman -Syu` generará dos snapshots: uno "pre" y otro "post".
 
 **Administración básica:**
@@ -147,7 +147,7 @@ btrfs subvolume snapshot /mnt/@snapshots/ID/snapshot /mnt/@
 ## 3.5 Alternativas y GUIs
 - **Timeshift:** Si prefieres algo visual y no te importa que sea menos flexible. Es "el botón de pánico" para el usuario que no quiere tocar la terminal.
 - **BTRFS Assistant:** Excelente front-end para Snapper. Te permite ver el espacio que consume cada snapshot y hacer mantenimiento sin sudar.
-## 4. Mantenimiento para no ser un "Usuario Zombi"
+# 4. Mantenimiento para no ser un "Usuario Zombi"
 BTRFS requiere un mínimo de atención para no degradarse:
 1. **Scrub:** Verificación de integridad. Ejecútalo una vez al mes:
     ```bash
@@ -155,5 +155,5 @@ BTRFS requiere un mínimo de atención para no degradarse:
     ```
 2. **Balance:** Solo si has hecho cambios masivos de discos o el espacio libre reportado es incoherente.
 3. **Check de espacio:** Olvida `df -h`. La verdad está en: `btrfs filesystem usage /`.
-##### Conclusión
+# Conclusión
 La verdadera maestría en Arch Linux no consiste en no romper nada; eso es imposible si realmente estás aprendiendo. La maestría consiste en **diseñar una arquitectura que te permita fallar de forma segura.**
