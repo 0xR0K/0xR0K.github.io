@@ -1,9 +1,9 @@
---- 
-title: Como recupere un disco que formatee por error.
-date: 2025-11-15 11:33 
-categories: [Forense] 
 ---
-
+title: Como Recupere un Disco Duro
+date: 2025-11-15
+categories:
+  - Forense
+---
 Estos días tuve un problema. Un problema que, tarde o temprano, nos acaba pasando a todos los que vivimos en la terminal. **Formateé la unidad incorrecta.**
 Estaba preparando un USB booteable con varias ISOs para formatear otro equipo. Las prisas y la confianza son malas compañeras: Sencillamente tabular es una mala mania que tengo, no completar casi nunca los comandos o rutas completas. y simplemente delegar en que tabulando se llega a todos los lados. Bueno... Me equivoque y en vez de formatear /dev/sdd formatee /dev/sdb. Similitudes... 
 

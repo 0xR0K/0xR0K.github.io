@@ -1,7 +1,9 @@
---- 
-title: Configuración para un Nvidia user
-date: 2025-12-26 15:05 
-categories: [gestores-de-ventanas, Hyprland] 
+---
+title: Hyprland Configuracion Nvidia
+date: 2025-12-26
+categories:
+  - Gestores de ventanas
+  - Hyprland
 ---
 A ver, mazapan. Si estás leyendo esto es por dos razones: o te va la marcha sado-masoquista, o te has gastado el sueldo en una gráfica de NVIDIA y ahora te das cuenta de que en Linux te odian.
 
@@ -16,12 +18,10 @@ Con los drivers recientes (580+), la cosa ha mejorado una barbaridad gracias al 
 Esto no es un tutorial de 5 minutos de YouTube para copiar y pegar como un mono amaestrado. Vamos a tocar el kernel, vamos a meterle mano al initramfs... Si te da miedo la terminal, cierra y vuelve a Windows, atiende.
 
 # Fase 0: Nvidia en Hyprland (Drivers)
-
 Aquí es donde la mayoría la caga, a finales de 2025. NVIDIA ha decidido dividir la baraja y si no sabes qué hardware tienes pinchado, vas a romper el sistema antes de empezar.
 
 Ya no vale instalar `nvidia-dkms` a lo loco. Tienes que elegir tu veneno:
 ### Las ramas actuales:
-
 1. **Drivers "Legacy" (Rama 580xx - Propietarios):**
     - **Para quién:** Si tienes una tarjeta con solera, anterior a la arquitectura Turing. Hablamos de las **GTX 1000 (Pascal), GTX 900 (Maxwell), Titan X**...
     - **La realidad:** Ni se te ocurra meterle los drivers "Open" a estas tarjetas. **NO van a arrancar**. NVIDIA ha cerrado el grifo aquí y no hay firmware para ti. Tu grafica esta mas cerca de ser un artilugio, que tecnologia...
@@ -48,13 +48,11 @@ sudo pacman -S nvidia-open-dkms nvidia-utils lib32-nvidia-utils linux-zen-header
 
 # Fase 1: Cirugía al Kernel (GRUB)
 Antes de que Hyprland pueda siquiera respirar, el kernel tiene que saber cómo hablar con la gráfica. Tenemos que activar el **Atomic Modesetting**. Sin esto, NVIDIA para Wayland es una cosa pinchada en un puerto pci.
-
 ### Diagnóstico Previo
 Revisamos que nos dice este comando:
 ```bash
 cat /proc/cmdline | grep -E "modeset=1"
 ```
-
 ¿No sale nada? Pues toca operar.
 ### La Solución
 Abre `/etc/default/grub` con tu editor favorito (no te voy a juzgar hoy). Busca la línea `GRUB_CMDLINE_LINUX_DEFAULT` y métele esto:
@@ -74,7 +72,6 @@ Aquí jugamos contra el reloj. Existe una "carrera" (Race Condition) en el arran
 
 ### La Estrategia
 Vamos a forzar que los módulos de NVIDIA se carguen en el _initramfs_, es decir, antes incluso de que se monte el disco duro.
-
 Edita `/etc/mkinitcpio.conf` y busca el array `MODULES`. Mételos ahí a presión:
 ```bash
 MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
@@ -86,7 +83,6 @@ Y aplica los cambios, que no se hacen solos, calamardo!
 ```bash
 sudo mkinitcpio -P
 ```
-
 **Verificación:** Reinicia y ejecuta `lsmod | grep nvidia`. Si sale una lista larga, has triunfado.
 
 # Fase 3: Variables de Entorno (Hyprland.conf)
@@ -108,7 +104,6 @@ env = ELECTRON_OZONE_PLATFORM_HINT,auto
 env = QT_QPA_PLATFORM,wayland;xcb
 env = QT_WAYLAND_DISABLE_WINDOWDECORATION,1
 ```
-
 # Fase 4: Gestión de Energía (El Coma Profundo)
 El clásico de NVIDIA: cierras la tapa del portátil, se suspende, y al despertar... sorpresa. Pantalla negra, texturas corruptas o el sistema frito. Esto pasa porque la memoria de vídeo (VRAM) se En este caso, si estaba muerto y no de parranda.... Me despertao gracioso, que te pasa.
 
@@ -121,7 +116,6 @@ sudo systemctl enable nvidia-suspend nvidia-hibernate nvidia-resume
 ```bash
 options nvidia NVreg_PreserveVideoMemoryAllocations=1
 ```
-
 # Fase 5: Aceleración de Vídeo (VA-API)
 No te has gastado una pasta en una gráfica para que tu CPU se ponga al 100% y los ventiladores suenen como un avión cuando ves un vídeo de YouTube. Queremos que la GPU curre.
 
@@ -133,7 +127,6 @@ sudo pacman -S libva-nvidia-driver
 **Configuración Firefox:** A veces el zorro es un poco cabezon e ignora al sistema. Entra en `about:config` (escríbelo en la barra de direcciones, melón) y fuerza estas opciones a **true**:
 - `media.ffmpeg.vaapi.enabled`
 - `media.rdd-ffmpeg.enabled`
-
 **Verificación:** Ejecuta `vainfo`. Si ves una lista de códecs y dice "Driver version: NVIDIA..." Bingo.
 
 # Fase 6: Compartir Pantalla (Portals)
@@ -164,14 +157,14 @@ cursor {
 # Checklist de Salud del Sistema (Dashboard)
 Antes de darte palmaditas en la espalda, pasa lista. Si todo esto está en verde, tienes un sistema roca. Si no, algo has roto.
 
-|**Componente**|**Comando de verificación**|**Resultado esperado**|
-|---|---|---|
-|**Kernel**|`uname -r`|Debe terminar en `-zen` (si me has hecho caso)|
-|**Middleware**|`pacman -Qs egl-wayland`|Instalado|
-|**Render**|`hyprctl systeminfo`|`NVIDIA GeForce ...`|
-|**VA-API**|`vainfo`|Sin errores, lista códecs|
-|**Boot Args**|`cat /proc/cmdline`|`modeset=1` presente|
-|**Módulos**|`lsmod|grep nvidia`|
+| **Componente** | **Comando de verificación** | **Resultado esperado**                         |
+| -------------- | --------------------------- | ---------------------------------------------- |
+| **Kernel**     | `uname -r`                  | Debe terminar en `-zen` (si me has hecho caso) |
+| **Middleware** | `pacman -Qs egl-wayland`    | Instalado                                      |
+| **Render**     | `hyprctl systeminfo`        | `NVIDIA GeForce ...`                           |
+| **VA-API**     | `vainfo`                    | Sin errores, lista códecs                      |
+| **Boot Args**  | `cat /proc/cmdline`         | `modeset=1` presente                           |
+| **Módulos**    | `lsmod                      | grep nvidia`                                   |
 
 # Plan de Emergencia y Rescate
 ¿Has tocado algo y ahora tienes pantalla negra? Que no cunda el pánico, cara anchoa. Aquí tienes cómo salir del pozo sin reinstalar como un cobarde.

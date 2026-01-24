@@ -1,9 +1,9 @@
---- 
-title: ArchLinux Guia definitiva de Instalacion
-date: 2026-01-06 13:28 
-categories: [ArchLinux, Instalacion] 
 ---
-
+title: Guia de Instalacion ArchLinux [1]
+date: 2026-01-06
+categories:
+  - ArchLinux
+---
 Hace un tiempo. Me propuse hacer una guía de instalación de Arch Linux a mi modo. Mi modo no es el definitivo. No es el mejor. Pero tras años utilizando Arch y conociendo a usuarios de Linux y Arch Linux. He querido aportar mi grano de arena. Esto no es una Guía de instalación de Arch Linux. Es más que esto. Mi idea es enseñarte a instalar Arch Linux. Yo voy a instalar Arch Linux a mi modo. Cómo yo lo haría, Explicando el razonamiento detrás de mi instalación.
 
 Si buscas como instalar Arch Linux de una forma rápida y sin leer. Escapa de este artículo. Aquí voy a instruirte para que sepas construir un sistema en Arch Linux.

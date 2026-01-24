@@ -1,7 +1,9 @@
---- 
-title: Hyprland - Configuración del Core
-date: 2025-12-26 14:33 
-categories: [gestores-de-ventanas, Hyprland] 
+---
+title: " Hyprland Configuracion Basica"
+date: 2025-12-26
+categories:
+  - Gestores de ventanas
+  - Hyprland
 ---
 Ya tienes Hyprland instalado, pero ahora mismo tu sistema es probablemente un lienzo en blanco o una configuración básica que necesita estructura para ser realmente usable.
 

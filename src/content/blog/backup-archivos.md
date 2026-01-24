@@ -1,9 +1,9 @@
---- 
-title: Como hacer un Backup de tus archivos. Cifrar, comprimir, Sincronizar y mas cosas.
-date: 2025-11-09 11:29 
-categories: [Forense] 
 ---
-
+title: Como hacer un Backup con BORGBACKUP
+date: 2025-11-09
+categories:
+  - Forense
+---
 ¿Recuerdas esa escena de _Mr. Robot_ donde Elliot guarda datos en CDs, los etiqueta como álbumes de música y los esconde en un estuche? Más allá de la paranoia de la serie, hay una lección importante ahí: **la privacidad y la persistencia de los datos.**
 
 Ya sea porque eres una persona que formatea contantemente o cambias de distribucion a menudo, porque temes al ransomware, o simplemente porque quieres que tus documentos perduren en el tiempo de forma segura, necesitas una estrategia de backup sólida.

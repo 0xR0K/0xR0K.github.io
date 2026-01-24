@@ -1,7 +1,8 @@
---- 
-title: Instalación de Arch Linux Configuración del sistema (Parte 2)
+---
+title: Guia de Instalacion ArchLinux [2]
 date: 2026-01-07
-categories: [] 
+categories:
+  - ArchLinux
 ---
 Hoy retomamos la instalación de Arch Linux. En el [primer artículo](https://www.google.com/search?q=url-a-parte-1 "null"), llegamos hasta la instalación base del sistema. Dado que me gusta explicar la teoría detrás de cada paso, el texto anterior se extendió demasiado, así que decidí dividir la guía para no dejar nada pendiente.
 

@@ -1,9 +1,10 @@
 ---
 title: La Biblia del SysAdmin - Cómo saber si te han hackeado hasta el alma.
-date: 2025-12-15 17:52 
-categories: [SysAdmin, Forense] 
+date: 2025-12-15 17:52
+categories:
+  - SysAdmin
+  - Forense
 ---
-
 A ver, merluzo, deja de mirar TikTok un rato. Hoy vamos a hablar de algo serio.
 
 Si administras servidores, ya sabes que la tranquilidad es solo un estado temporal antes del siguiente desastre. Y si usas **Arch Linux** en producción (valiente, me gusta tu estilo) o simplemente quieres entender qué demonios pasa en tu estación de trabajo, tienes que asumir una realidad: **si no miras los logs, eres ciego.**

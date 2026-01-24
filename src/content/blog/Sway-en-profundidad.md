@@ -1,7 +1,9 @@
---- 
-title: Mi aventura en Sway + un poco de historia
-date: 2025-11-16 11:11 
-categories: [gestores-de-ventanas] 
+---
+title: Mi Aventura en Sway
+date: 2025-11-16
+categories:
+  - Gestores de ventanas
+  - Sway
 ---
 Si has leído algo sobre mí, sabrás que llevo más de un lustro usando **i3WM** sobre Arch Linux. Para mí, ha sido el estándar, el lugar donde siempre he acabado regresando.
 
@@ -36,7 +38,6 @@ En 2016, crear un compositor en Wayland desde cero era un auténtico infierno. A
 ---
 
 ### Filosofía: Dogmas, Realidades y la "Paradoja"
-
 Sway no es solo software, se rige por una filosofía técnica muy clara que a veces choca con lo que estamos acostumbrados.
 
 **Mantener la modularidad en un mundo cerrado** Cuando Wayland empezó a estandarizarse, la tendencia de los grandes escritorios (como GNOME o KDE) era hacerlo todo "monolítico". Es decir, el gestor de ventanas, las aplicaciones, la barra, las notificaciones... todo venía en el mismo paquete cerrado.
@@ -62,9 +63,7 @@ Es por esto que, para arrancar Sway con estos drivers, sigues teniendo que usar 
 ---
 
 ### ¿Por qué elegir Sway?
-
 ![[sway1.png]]
-
 Vale, ya os he soltado la chapa técnica y filosófica. Pero, ¿por qué deberías instalarlo tú hoy? Después de probarlo a fondo, estas son las razones reales:
 
 **Solidez y Estabilidad** Sway es un gestor que hace las cosas muy bien. Todo está pensado para no dar problemas. Se siente como un sistema donde cada pieza encaja perfectamente, como si fuera un puzzle.
@@ -88,7 +87,6 @@ Tengo que decir que **trastear con él ha sido muy divertido**. Me lo he pasado 
 **En el Portátil: Se queda.** Aquí la historia cambia radicalmente. En el portátil, donde tengo una gráfica integrada y lo uso para trabajar, navegar y programar, **Sway es una maravilla**. Ahí sí que le saco partido a la eficiencia, al consumo ridículo de batería y al minimalismo. En este entorno, Sway es imbatible.
 
 ### ¿El fin de i3?
-
 Sí. Aunque en el sobremesa no use Sway, tengo claro que **no hay vuelta atrás a i3**. X11 ya es historia. Esta aventura me ha servido para dar el salto definitivo a Wayland. Si vuelvo atrás en algún momento, volveré a Sway.
 
 En algún momento, cuando tenga los códigos bien pulidos y ordenados, subiré mis **Dotfiles** y haré un artículo explicando cómo he montado todo el chiringuito, por si a alguno os sirve de base o queréis cotillear cómo lo he hecho.

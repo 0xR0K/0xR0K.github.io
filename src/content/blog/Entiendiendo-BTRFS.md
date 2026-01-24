@@ -1,7 +1,8 @@
---- 
+---
 title: Entiendiendo-BTRFS
 date: 2026-01-19
-categories: [Arquitectura de Sistemas]
+categories:
+  - Arquitectura de Sistemas
 ---
 Hoy vamos a estar hablando de **BTRFS**. Si has seguido mis guías de instalación anteriores, habrás notado que tomo decisiones muy específicas sobre el sistema de archivos. No es por chulear, o salir del esquema, sino por una cuestión de arquitectura: **diseñar un sistema para que sea resiliente ante el error humano y técnico.**
 

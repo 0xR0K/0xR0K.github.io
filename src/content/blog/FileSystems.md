@@ -1,10 +1,9 @@
---- 
-title: Tipos de File Systems 
-date: 2025-12-28 20:07 
-
-categories: [Arquitectura de Sistemas] 
 ---
-
+title: FileSystems
+date: 2025-12-28
+categories:
+  - Arquitectura de Sistemas
+---
 Hoy inauguramos la categoría **Arquitectura de Sistemas** hablando de una de las piezas angulares de cualquier SO: los **Sistemas de Archivos** (FileSystems o FS).
 
 Este tema merece un artículo propio porque es la base sobre la que descansan tus datos. La gran ventaja de Linux es que **nosotros somos los arquitectos del sistema**. Es cierto que existen muchas distribuciones con instaladores visuales y automatizados que nos facilitan la vida con configuraciones "básicas" (el famoso _Siguiente > Siguiente > Instalar_). Esto es cómodo, pero nos abstrae de lo que realmente está ocurriendo bajo el capó. Y es por eso que para mí esta parte es crucial:
